@@ -49,7 +49,7 @@ const Register = () => {
   
   return (
     <div className="">
-       <div className="flex h-screen w-screen items-center justify-center pt-20 ">
+       <div className="flex h-screen w-screen items-center justify-center pt-20">
       <div className="flex bg-white shadow-lg rounded-lg overflow-hidden w-3/4 max-w-4xl">
         <div className="w-1/2 hidden md:block bg-no-repeat bg-left">
           <img
