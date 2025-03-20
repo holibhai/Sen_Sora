@@ -33,10 +33,12 @@ const Footer = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
         {/* Brand Column */}
         <div className="lg:col-span-4">
-          <div className="flex items-center gap-1 mb-6">
-            <img src={Logo} alt=""  className="w-[100px] h-[100px]"/>
-            <div className="text-3xl font-bold">Sen-Sora</div>
-          </div>
+        <div className="flex items-center gap-1 cursor-pointer">
+          <img src={Logo} alt="" className="w-[70px] h-[70px] " />
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            Sen-Sora
+          </h1>
+        </div>
           <p className="text-gray-600 mb-6">
             Sen_Sora is a web-based platform for selling cakes and gifts,
             offering a seamless shopping experience with secure payments, order
@@ -65,7 +67,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Links Columns */}
         <div className="lg:col-span-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {Object.entries(footerLinks).map(
