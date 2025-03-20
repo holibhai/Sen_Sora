@@ -46,9 +46,10 @@ const Register = () => {
       alert("Registration failed. Please try again.");
     }
   };
-
+  
   return (
-    <div className="flex h-screen w-screen items-center justify-center ">
+    <div className="">
+       <div className="flex h-screen w-screen items-center justify-center pt-20 ">
       <div className="flex bg-white shadow-lg rounded-lg overflow-hidden w-3/4 max-w-4xl">
         <div className="w-1/2 hidden md:block bg-no-repeat bg-left">
           <img
@@ -58,7 +59,7 @@ const Register = () => {
           />
         </div>
         <div className="w-full md:w-1/2 p-8">
-          <h2 className="text-2xl font-bold text-center text-gray-700">
+          <h2 className="text-2xl font-bold text-center text-gray-700 ">
             Register
           </h2>
           <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
@@ -138,7 +139,7 @@ const Register = () => {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-tr from-indigo-500 to-pink-500 text-white p-2 rounded hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className="w-full bg-gradient-to-tr from-indigo-500 to-pink-500 text-white p-2 rounded  focus:ring-2 focus:ring-blue-400 focus:outline-none"
             >
               Register
             </button>
@@ -156,6 +157,8 @@ const Register = () => {
         </div>
       </div>
     </div>
+    </div>
+   
   );
 };
 
