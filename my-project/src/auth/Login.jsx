@@ -38,7 +38,7 @@ const Login = () => {
   };
 
   return (
-    <div className='flex h-screen w-screen items-center justify-center '>
+    <div className='flex h-screen w-screen items-center justify-center pt-20 '>
       <div className='flex bg-white shadow-lg rounded-lg overflow-hidden w-3/4 max-w-4xl'>
         {/* Left Side - Image */}
         <div className='w-1/2 hidden md:block'>
