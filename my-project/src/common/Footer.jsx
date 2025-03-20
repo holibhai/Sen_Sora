@@ -1,5 +1,6 @@
 import React from "react";
 import { FaFacebookF, FaTwitter, FaLinkedinIn } from "react-icons/fa";
+import Logo from "../assets/__-removebg-preview.png"
 
 
 const Footer = () => {
@@ -33,6 +34,7 @@ const Footer = () => {
         {/* Brand Column */}
         <div className="lg:col-span-4">
           <div className="flex items-center gap-1 mb-6">
+            <img src={Logo} alt=""  className="w-[100px] h-[100px]"/>
             <div className="text-3xl font-bold">Sen-Sora</div>
           </div>
           <p className="text-gray-600 mb-6">
