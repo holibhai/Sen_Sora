@@ -6,6 +6,14 @@ module.exports = {
   theme: {
     extend: {},
   },
+  // module: {
+  //   rules: [
+  //     {
+  //       test: /\.(png|jpe?g|gif)$/i,
+  //       type: 'asset/resource',
+  //     },
+  //   ],
+  // },
   plugins: [],
 }
 
