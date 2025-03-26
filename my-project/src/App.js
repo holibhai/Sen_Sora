@@ -7,6 +7,13 @@ import Navbar from "./common/Navbar";
 import Home from "./navPages/Home";
 import Contact from "./navPages/Contact";
 import About from "./navPages/About";
+import ProductListed from "./productPages/productMainPage/ProductListed";
+import ProductDetail from "./productPages/ProductDetails";
+import CheckOut from "./productPages/CheckOut";
+import Billing from "./productPages/Billing";
+import Delivery from "./productPages/Delivery"; 
+import PickUp from "./productPages/PickUp";
+
 
 const App = () => {
   return (
@@ -18,6 +25,15 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/products" element={<ProductListed />} /> 
+        <Route path="/productDetail" element={<ProductDetail/>} />
+        <Route path="/checkout" element={<CheckOut/>} />
+        <Route path="/billing" element={<Billing/>} />
+        <Route path="/delivery" element={<Delivery />} />    
+        <Route path="/pickup" element={<PickUp />} />
+
+
+
       </Routes>
       <Footer/>
     </div>
