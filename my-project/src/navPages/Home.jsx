@@ -3,7 +3,7 @@ import React from "react";
 const Home = () => {
   return (
     <div
-      className="relative w-full h-screen mt-44 rounded-3xl flex items-center justify-center bg-cover  "
+      className="relative w-full h-screen mt-44 rounded-3xl flex items-center justify-center bg-cover  font-serif"
       style={{ backgroundImage: "url('Indulge Your.jpg')" }}
     >
       <div className="absolute inset-0  bg-opacity-50"></div>
