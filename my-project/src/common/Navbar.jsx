@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaSearch, FaHeart, FaUser, FaShoppingCart } from "react-icons/fa";
 import Logo from "../assets/__-removebg-preview.png"
 
 
 const Navbar = () => {
+  const navigate=useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState(null);
   let closeTimeout;
@@ -22,6 +23,10 @@ const Navbar = () => {
       image: "/images/gifts.jpg"
     },
   ];
+
+  const handleRoute=()=>{
+    navigate("/products")
+  }
 
   return (
     <>
@@ -58,7 +63,8 @@ const Navbar = () => {
                   {categories.map((category, index) => (
                     <div
                       key={index}
-                      className="relative group"
+                      className="relative group "
+                      onClick={handleRoute}
                       onMouseEnter={() => {
                         clearTimeout(closeTimeout);
                         setHoveredCategory(index);
