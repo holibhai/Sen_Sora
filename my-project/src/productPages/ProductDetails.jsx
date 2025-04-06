@@ -5,6 +5,7 @@ import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+
 const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const navigate=useNavigate()
@@ -82,9 +83,9 @@ const ProductDetail = () => {
               </p>
               <div className="mt-3 grid grid-cols-1 gap-2">
                 <h1 className="font-bold text-gray-700 text-xl">Dimentions</h1>
-                <h1>Width: 2 Door - 44 inches, 3 Door - 66 inches, Custom</h1>
+                {/* <h1>Width: 2 Door - 44 inches, 3 Door - 66 inches, Custom</h1>
                 <h1>Height: 78 inches</h1>
-                <h1>Depth: 24 inches</h1>
+                <h1>Depth: 24 inches</h1> */}
               </div>
               <div className="flex items-center gap-12 border-b border-gray-400 pb-4">
                 <div className="flex items-center -space-x-1  bg-gray-600  my-3">

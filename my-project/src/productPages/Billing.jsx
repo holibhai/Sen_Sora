@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import PickUp from './PickUp';
 import Delivery from './Delivery';
-import image from "../assets/Yellow and White Modern Furniture Instagram Post.jpg";
-import botImage from "../assets/Black and White Minimalist Simplify Vibes Twitter Header.jpg"
+import image from "../assets/Brown Minimalist Chocolate Cake Food Instagram Post.jpg";
+import botImage from "../assets/Indulge Your.jpg"
 import { Link } from 'react-router-dom';
 
 
@@ -42,8 +42,8 @@ const Billing = () => {
                             <input type="text" className='bg-transparent border border-gray-400 py-3 px-10' />
                         </div>
                     </div>
-                    <div className='my-10 relative'>
-                        <img src={image} alt="" className=' w-full object-cover' />
+                    <div className='my-10 relative '>
+                        <img src={image} alt="" className=' w-full object-cover h-[600px]' />
                         <button className='absolute top-24 pt-2 left-24 font-semibold text-white'><Link to="/offerProduct">Shop now</Link></button>
                     </div>
                 </div>
