@@ -2,33 +2,17 @@ import React, { useState } from "react";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 
 const categories = [
-  {
-    name: "Living",
-    subcategories: ["Sofas", "Coffee Tables", "TV Units", "Shelving"],
-    image: "/images/living-room.jpg",
+  { 
+    name: "Cakes", 
+    subcategories: ["Vanilla", "Chocolate", "Strawberry", "Orange"],
+    image: "/images/cakes.jpg"
   },
-  {
-    name: "Dining",
-    subcategories: ["Dining Sets", "Tables", "Chairs", "Cabinets"],
-    image: "/images/dining-room.jpg",
-  },
-  {
-    name: "Bedroom",
-    subcategories: ["Beds", "Wardrobes", "Dressers", "Nightstands"],
-    image: "/images/bedroom.jpg",
-  },
-  {
-    name: "Kitchen",
-    subcategories: ["Cabinets", "Shelving", "Islands", "Carts"],
-    image: "/images/kitchen.jpg",
-  },
-  {
-    name: "Study & Office",
-    subcategories: ["Desks", "Chairs", "Bookshelves", "Storage"],
-    image: "/images/study-office.jpg",
+  { 
+    name: "Gifts", 
+    subcategories: ["Birthday Gifts", "Anniversary Gifts", "Personalized Gifts", "Luxury Gifts", "Corporate Gifts", "Gift Cards"],
+    image: "/images/gifts.jpg"
   },
 ];
-
 const CategorySidebar = () => {
   const [openCategory, setOpenCategory] = useState(null);
 
