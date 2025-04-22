@@ -12,7 +12,8 @@ import ProductDetail from "./productPages/ProductDetails";
 import CheckOut from "./productPages/CheckOut";
 import Billing from "./productPages/Billing";
 import Delivery from "./productPages/Delivery"; 
-import PickUp from "./productPages/PickUp";
+import PickUp from "./productPages/PickUp";          
+import AdminLayout from "./admin/AdminLayout";
 
 
 const App = () => {
@@ -31,6 +32,12 @@ const App = () => {
         <Route path="/billing" element={<Billing/>} />
         <Route path="/delivery" element={<Delivery />} />    
         <Route path="/pickup" element={<PickUp />} />
+        
+
+        <Route path="/admin" element={<AdminLayout />}>
+          {/* <Route index element={<AdminHome />} /> */}
+          
+        </Route>
 
 
 
