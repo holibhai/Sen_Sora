@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const connectToMongoDb = require("./db/connectToMongoDb");
 const authRoutes = require("./routes/auth.routes");
+const adminRoutes = require("./routes/admin.routes");
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(express.json()); // to parse the incoming requests with JSON payloads (f
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/admin",adminRoutes)
 
 server.listen(PORT, () => {
 	connectToMongoDb();
