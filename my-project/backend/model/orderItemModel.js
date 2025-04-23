@@ -19,7 +19,12 @@ const orderItemSchema = new mongoose.Schema({
   price: {
     type: Number,
     required: true
-  }
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  },
+
 });
 
 module.exports = mongoose.model('OrderItem', orderItemSchema);
