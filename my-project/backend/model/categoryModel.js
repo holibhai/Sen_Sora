@@ -20,8 +20,17 @@ const createCategoriesTable = () => {
   });
 };
 
+const getCategories = (callback) => {
+  const query = `
+    SELECT type, category 
+    FROM categories 
+    ORDER BY type, category;
+  `;
+  connection.query(query, callback);
+};
+
 module.exports = {
-  createCategoriesTable,
+  createCategoriesTable,getCategories
 };
 
 
