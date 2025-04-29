@@ -12,7 +12,7 @@ const { getCategories } = require("../models/categoryModel");
 
 
 // Route to create a new category
-router.post("/", createCategory);
+router.post("/add", createCategory);
 
 // Route to get all categories
 router.get("/categories", (req, res) => {

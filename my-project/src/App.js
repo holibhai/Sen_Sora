@@ -17,6 +17,9 @@ import AdminLayout from "./admin/AdminLayout";
 import AdminHome from "./admin/AdminHome";
 import Products from "./admin/Products";
 import Orders from "./admin/Orders";
+import AddCategory from "./admin/AddCategory";
+import AddProduct from "./admin/AddProduct";
+import UpdateProduct from "./admin/UpdateProduct";
 
 const App = () => {
   const location = useLocation();
@@ -45,6 +48,12 @@ const App = () => {
           <Route index element={<AdminHome />} />
           <Route path="products" element={<Products />} />
           <Route path="orders" element={<Orders />} />
+          <Route path="category" element={<AddCategory />} />
+          <Route path="addProduct" element={<AddProduct />} />
+          <Route path="updateProduct" element={<UpdateProduct />} />
+
+
+
 
 
           

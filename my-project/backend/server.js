@@ -34,12 +34,16 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin",adminRoutes);
 app.use("/api/products",productRoutes)
 app.use("/api/categories", categoryRoutes);
+<<<<<<< HEAD
 
+=======
+// app.use("/api/categories", categoryRoutes);
+>>>>>>> 1770bfa96f02490194d75ec9d796a3b81b5ced79
 
 app.listen(PORT, () => {
 	connectToMySql();
 	createUsersTable();
 	createAdminsTable();
 	createCategoriesTable();
-	console.log(`Server Running on port ${PORT}`);
+	console.log(`Server Running on port ${PORT}`); 
 });
