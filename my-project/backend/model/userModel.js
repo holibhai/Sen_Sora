@@ -1,37 +1,31 @@
-const mongoose = require('mongoose');
+const { connection } = require("../db/ConnectMysql");
 
-const userSchema = new mongoose.Schema({
- userId:{
-    type: String,
-    required: true,
-    unique: true
-  },
- 
-  firstName: {
-    type: String,
-    required: true
-  },
-    lastName: {
-        type: String,
-        required: true
-    },
-  username: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  address: String,
-  phone: String,
-  
-});
+// Function to create the 'users' table
+const createUsersTable = () => {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS users (
+      userId VARCHAR(255) NOT NULL UNIQUE,
+      firstName VARCHAR(255) NOT NULL,
+      lastName VARCHAR(255) NOT NULL,
+      username VARCHAR(255) NOT NULL UNIQUE,
+      email VARCHAR(255) NOT NULL UNIQUE,
+      password VARCHAR(255) NOT NULL,
+      address VARCHAR(255),
+      phone VARCHAR(255),
+      PRIMARY KEY (userId)
+    );
+  `;
 
-module.exports = mongoose.model('User', userSchema);
+  connection.query(createTableQuery, (err, result) => {
+    if (err) {
+      console.error("Error creating users table:", err);
+    } else {
+      console.log("Users table created or already exists.");
+    }
+    connection.end(); // Close the connection after the query
+  });
+};
+
+module.exports = {
+  createUsersTable,
+};
