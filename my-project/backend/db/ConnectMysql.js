@@ -7,13 +7,15 @@ const connection = mysql.createConnection({
   database: 'sensora'
 });
 
-connection.connect(err => {
-  if (err) {
-    console.error('Error connecting to MySQL:', err.stack);
-    return;
-  }
-  console.log('Connected as ID', connection.threadId);
-});
+const connectToMySql = () => {
+  connection.connect(err => {
+    if (err) {
+      console.error('MySQL connection error:', err.stack);
+    } else {
+      console.log('Connected to MySQL as ID', connection.threadId);
+    }
+  });
+};
 
 module.exports = {
     connectToMySql,

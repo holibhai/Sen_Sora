@@ -1,23 +1,27 @@
-const mongoose = require('mongoose');
+const { connection } = require("../db/ConnectMysql");
 
-const adminSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  role: {
-    type: String,
-    default: 'admin'
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+// Function to create the 'admins' table
+const createAdminsTable = () => {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS admins (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      username VARCHAR(255) NOT NULL UNIQUE,
+      password VARCHAR(255) NOT NULL,
+      role VARCHAR(50) DEFAULT 'admin',
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
 
-module.exports = mongoose.model('Admin', adminSchema);
+  connection.query(createTableQuery, (err, result) => {
+    if (err) {
+      console.error("Error creating admins table:", err);
+    } else {
+      console.log("Admins table created or already exists.");
+    }
+    connection.end(); // Always close the connection after the query
+  });
+};
+
+module.exports = {
+  createAdminsTable,
+};
