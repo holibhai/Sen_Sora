@@ -1,5 +1,5 @@
 const express=require("express")
-const { signup, login, logout } = require("../controller/auth.controller")
+const { signup, login, logout } = require("../controller/admin.controller")
 
 
 
