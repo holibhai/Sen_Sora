@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import image from "../assets/top-view-slice-cake-baked-sweet-with-raspberries-bright-pink-desk-bake-cake-pie-fruit_140725-38945.jpg";
 // import cake from "my-project/src/assets"
-
+     
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -13,7 +13,7 @@ const Register = () => {
     confirmPassword: "",
     agree: false,
   });
-
+  
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -21,7 +21,7 @@ const Register = () => {
       [name]: type === "checkbox" ? checked : value,
     });
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
