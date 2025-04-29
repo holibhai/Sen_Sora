@@ -2,7 +2,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const path = require("path");
-const connectToMongoDb = require("./db/connectToMongoDb");
+const { connectToMySql } = require("./db/ConnectMysql");
 const authRoutes = require("./routes/auth.routes");
 const adminRoutes = require("./routes/admin.routes");
 const productRoutes=require("./routes/product.routes")
@@ -24,6 +24,6 @@ app.use("/api/admin",adminRoutes);
 app.use("/api/products",productRoutes)
 
 server.listen(PORT, () => {
-	connectToMongoDb();
+	connectToMySql();
 	console.log(`Server Running on port ${PORT}`);
 });
