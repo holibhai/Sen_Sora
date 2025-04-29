@@ -20,8 +20,7 @@ connection.query(createCartItemsTable, (err, result) => {
   } else {
     console.log('Cart_items table created or already exists.');
   }
-  // Always close the connection
-  connection.end();
+
 });
 
 

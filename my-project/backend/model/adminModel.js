@@ -4,8 +4,8 @@ const { connection } = require("../db/ConnectMysql");
 const createAdminsTable = () => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS admins (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      username VARCHAR(255) NOT NULL UNIQUE,
+ adminId CHAR(36) PRIMARY KEY,
+      email VARCHAR(255) NOT NULL UNIQUE,
       password VARCHAR(255) NOT NULL,
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
@@ -17,7 +17,7 @@ const createAdminsTable = () => {
     } else {
       console.log("Admins table created or already exists.");
     }
-    connection.end(); // Always close the connection after the query
+// Always close the connection after the query
   });
 };
 

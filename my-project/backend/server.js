@@ -5,7 +5,9 @@ const path = require("path");
 const { connectToMySql } = require("./db/ConnectMysql");
 const authRoutes = require("./routes/auth.routes");
 const adminRoutes = require("./routes/admin.routes");
-const productRoutes=require("./routes/product.routes")
+const productRoutes=require("./routes/product.routes");
+const { createUsersTable } = require("./model/userModel");
+const { createAdminsTable } = require("./model/adminModel");
 
 dotenv.config();
 
@@ -23,7 +25,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin",adminRoutes);
 app.use("/api/products",productRoutes)
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
 	connectToMySql();
+	createUsersTable();
+	createAdminsTable();
 	console.log(`Server Running on port ${PORT}`);
 });

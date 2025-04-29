@@ -1,4 +1,5 @@
 const { connection } = require("../db/ConnectMysql");
+const { v4: uuidv4 } = require("uuid");
 const bcryptjs=require("bcryptjs");
 const generateTokenAndSetCookie = require("../utils/generateToken");
 
@@ -7,19 +8,25 @@ const generateTokenAndSetCookie = require("../utils/generateToken");
 // Signup
 const signup = async (req, res) => {
     try {
-      const { firstName, lastName, username, password, confirmPassword } = req.body;
+      const {
+        firstName,
+        lastName,
+        username,
+        email,
+        password,
+        address,
+        phone
+      } = req.body;
   
-      // Check if passwords match
-      if (password !== confirmPassword) {
-        return res.status(400).json({ error: "Passwords don't match" });
-      }
+
   
       // Check if username already exists
       connection.query(
-        "SELECT * FROM users WHERE username = ?",
-        [username],
+        "SELECT * FROM users WHERE email = ?",
+        [email],
         async (err, results) => {
           if (err) {
+            console.log("The error is "+err)
             return res.status(500).json({ error: "Internal Server Error" });
           }
   
@@ -30,18 +37,25 @@ const signup = async (req, res) => {
           // Hash the password
           const salt = await bcryptjs.genSalt(10);
           const hashedPassword = await bcryptjs.hash(password, salt);
+          const userId = uuidv4(); // Generate a unique ID
   
-          // Insert new user into the database
-          const query = `INSERT INTO users (firstName, lastName, username, password) VALUES (?, ?, ?, ?)`;
-          connection.query(query, [firstName, lastName, username, hashedPassword], (err, result) => {
-            if (err) {
-              return res.status(500).json({ error: "Failed to create user" });
-            }
+             // Insert user
+      const insertQuery = `
+      INSERT INTO users ( userId,firstName, lastName, username, email, password, address, phone)
+      VALUES (?, ?, ?, ?, ?, ?, ?,?)
+    `;
+    const values = [userId, firstName, lastName, username, email, hashedPassword, address || null, phone || null];
+
+    connection.query(insertQuery, values, (err, result) => {
+      if (err) {
+        console.log(err)
+        return res.status(500).json({ error: "Failed to create user" });
+      }
   
-            const newUser = { firstName, lastName, username };
-            generateTokenAndSetCookie(newUser.username, res); // You can pass the username or userId
+            const newUser = {  firstName, lastName, username, email };
+            const token=generateTokenAndSetCookie(newUser.email, res); // You can pass the username or userId
   
-            res.status(201).json({ message: "User created successfully", user: newUser });
+            res.status(201).json({ message: "User created successfully", user: newUser,token });
           });
         }
       );
@@ -53,10 +67,10 @@ const signup = async (req, res) => {
 
   const login = async (req, res) => {
     try {
-      const { username, password } = req.body;
+      const { email, password } = req.body;
   
       // Query to get user from MySQL database by username
-      connection.query("SELECT * FROM users WHERE username = ?", [username], async (err, results) => {
+      connection.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
         if (err) {
           console.log("Error querying database", err);
           return res.status(500).json({ error: "Internal Server Error" });
@@ -77,11 +91,11 @@ const signup = async (req, res) => {
         }
   
         // Generate JWT token and set it in the cookie
-        generateTokenAndSetCookie(user.username, res); // You can use `user.username` or `user.id` based on your setup
+       const token= generateTokenAndSetCookie(user.email, res); // You can use `user.username` or `user.id` based on your setup
   
         // Respond with the user data excluding the password
         const { password: _, ...userWithoutPassword } = user;
-        res.status(200).json(userWithoutPassword);
+        res.status(200).json({ message: "User Login successfully", user: userWithoutPassword,token });
       });
     } catch (error) {
       console.log("Error in login controller", error.message);

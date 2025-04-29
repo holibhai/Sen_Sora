@@ -1,4 +1,5 @@
 const { connection } = require("../db/ConnectMysql");
+const { v4: uuidv4 } = require("uuid");
 const bcryptjs=require("bcryptjs");
 const generateTokenAndSetCookie = require("../utils/generateToken");
 
@@ -6,41 +7,41 @@ const generateTokenAndSetCookie = require("../utils/generateToken");
 // Signup
 const signup = async (req, res) => {
     try {
-      const { firstName, lastName, username, password, confirmPassword } = req.body;
+      const {  email, password } = req.body;
   
-      // Check if passwords match
-      if (password !== confirmPassword) {
-        return res.status(400).json({ error: "Passwords don't match" });
-      }
+
   
       // Check if username already exists
       connection.query(
-        "SELECT * FROM admins WHERE username = ?",
-        [username],
+        "SELECT * FROM admins WHERE email = ?",
+        [email],
         async (err, results) => {
           if (err) {
+            console.log(err)
             return res.status(500).json({ error: "Internal Server Error" });
           }
   
           if (results.length > 0) {
-            return res.status(400).json({ error: "Username already exists" });
+            return res.status(400).json({ error: "Email already exists" });
           }
   
           // Hash the password
           const salt = await bcryptjs.genSalt(10);
           const hashedPassword = await bcryptjs.hash(password, salt);
+             const adminId = uuidv4();
   
           // Insert new user into the database
-          const query = `INSERT INTO admins (firstName, lastName, username, password) VALUES (?, ?, ?, ?)`;
-          connection.query(query, [firstName, lastName, username, hashedPassword], (err, result) => {
+          const query = `INSERT INTO admins (adminId, email, password) VALUES (?, ?, ?)`;
+          connection.query(query, [adminId, email, hashedPassword], (err, result) => {
             if (err) {
+              console.log(err)
               return res.status(500).json({ error: "Failed to create user" });
             }
   
-            const newAdmin = { firstName, lastName, username };
-            generateTokenAndSetCookie(newUser.username, res); // You can pass the username or userId
+            const newAdmin = { email, password };
+            const token=generateTokenAndSetCookie(newAdmin.email, res); // You can pass the username or userId
   
-            res.status(201).json({ message: "User created successfully", user: newAdmin });
+            res.status(201).json({ message: "User created successfully", admin: newAdmin,token });
           });
         }
       );
@@ -54,10 +55,10 @@ const signup = async (req, res) => {
 
   const login = async (req, res) => {
     try {
-      const { username, password } = req.body;
+      const { email, password } = req.body;
   
       // Query to get user from MySQL database by username
-      connection.query("SELECT * FROM admins WHERE username = ?", [username], async (err, results) => {
+      connection.query("SELECT * FROM admins WHERE email = ?", [email], async (err, results) => {
         if (err) {
           console.log("Error querying database", err);
           return res.status(500).json({ error: "Internal Server Error" });
@@ -68,21 +69,21 @@ const signup = async (req, res) => {
           return res.status(400).json({ error: "Invalid username or password" });
         }
   
-        const user = results[0];
+        const admin = results[0];
   
         // Compare the hashed password with the one in the database
-        const isPasswordCorrect = await bcryptjs.compare(password, user.password);
+        const isPasswordCorrect = await bcryptjs.compare(password, admin.password);
   
         if (!isPasswordCorrect) {
           return res.status(400).json({ error: "Invalid username or password" });
         }
   
         // Generate JWT token and set it in the cookie
-        generateTokenAndSetCookie(user.username, res); // You can use `user.username` or `user.id` based on your setup
+        const token=generateTokenAndSetCookie(admin.email, res); // You can use `user.username` or `user.id` based on your setup
   
         // Respond with the user data excluding the password
-        const { password: _, ...userWithoutPassword } = user;
-        res.status(200).json(userWithoutPassword);
+        const { password: _, ...adminWithoutPassword } = admin;
+        res.status(201).json({ message: "User logged successfully", admin: adminWithoutPassword,token });
       });
     } catch (error) {
       console.log("Error in login controller", error.message);

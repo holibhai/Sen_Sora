@@ -14,6 +14,7 @@ const generateTokenAndSetCookie = (username, res) => {
     secure: process.env.NODE_ENV !== "development",  // Secure cookie for production environments
   });
 
+  return token;
 
 };
 

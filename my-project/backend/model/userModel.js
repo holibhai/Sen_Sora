@@ -7,7 +7,7 @@ const createUsersTable = () => {
       userId VARCHAR(255) NOT NULL UNIQUE,
       firstName VARCHAR(255) NOT NULL,
       lastName VARCHAR(255) NOT NULL,
-      username VARCHAR(255) NOT NULL UNIQUE,
+      username VARCHAR(255) NOT NULL ,
       email VARCHAR(255) NOT NULL UNIQUE,
       password VARCHAR(255) NOT NULL,
       address VARCHAR(255),
@@ -22,7 +22,6 @@ const createUsersTable = () => {
     } else {
       console.log("Users table created or already exists.");
     }
-    connection.end(); // Close the connection after the query
   });
 };
 

@@ -20,8 +20,7 @@ connection.query(createOrderTable, (err, result) => {
   } else {
     console.log('Order_items table created or already exists.');
   }
-  // Always close the connection
-  connection.end();
+
 });
 
 module.exports = {
