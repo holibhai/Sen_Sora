@@ -8,12 +8,18 @@ const adminRoutes = require("./routes/admin.routes");
 const productRoutes=require("./routes/product.routes");
 const { createUsersTable } = require("./model/userModel");
 const { createAdminsTable } = require("./model/adminModel");
+const cors = require("cors");
 
 dotenv.config();
 
 const app = express();
 // PORT should be assigned after calling dotenv.config() because we need to access the env variables. Didn't realize while recording the video. Sorry for the confusion.
 const PORT = process.env.PORT || 5000;
+
+app.use(cors({
+	origin: "http://localhost:3000",  // Replace with your frontend's origin
+	credentials: true                // Allow cookies to be sent
+  }));
 
 
 app.use(express.json()); // to parse the incoming requests with JSON payloads (from req.body)

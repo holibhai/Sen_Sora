@@ -31,7 +31,7 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch("http://localhost/3307/api/register", {
+      const response = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,119 +46,120 @@ const Register = () => {
       alert("Registration failed. Please try again.");
     }
   };
-  
+
   return (
     <div className="">
-       <div className="flex h-screen w-screen items-center justify-center pt-36">
-      <div className="flex bg-white shadow-lg rounded-lg overflow-hidden w-3/4 max-w-4xl">
-        <div className="w-1/2 hidden md:block bg-no-repeat bg-left">
-          <img
-            src={image}
-            alt="Register"
-            className="w-full h-full object-cover object-left "
-          />
-        </div>
-        <div className="w-full md:w-1/2 p-8">
-          <h2 className="text-2xl font-bold text-center text-gray-700 ">
-            Register
-          </h2>
-          <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-gray-700">First Name</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  placeholder="First Name"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">Last Name</label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  placeholder="Last Name"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-gray-700">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  placeholder="Password"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700">Confirm Password</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  placeholder="Confirm Password"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-gray-700">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder="Email"
-              />
-            </div>
-
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                name="agree"
-                checked={formData.agree}
-                onChange={handleChange}
-                className="mr-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              />
-              <label className="text-gray-700">
-                I agree to the terms and conditions
-              </label>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-tr from-indigo-500 to-pink-500 text-white p-2 rounded  focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            >
+      <div className="flex h-screen w-screen items-center justify-center pt-36">
+        <div className="flex bg-white shadow-lg rounded-lg overflow-hidden w-3/4 max-w-4xl">
+          <div className="w-1/2 hidden md:block bg-no-repeat bg-left">
+            <img
+              src={image}
+              alt="Register"
+              className="w-full h-full object-cover object-left "
+            />
+          </div>
+          <div className="w-full md:w-1/2 p-8">
+            <h2 className="text-2xl font-bold text-center text-gray-700 ">
               Register
-            </button>
-          </form>
+            </h2>
+            <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700">First Name</label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                    placeholder="First Name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700">Last Name</label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                    placeholder="Last Name"
+                  />
+                </div>
+              </div>
 
-          <p className="text-center text-gray-600 mt-4">
-            Already have an account?
-            <button
-              onClick={() => navigate("/login")}
-              className="text-blue-500 hover:underline"
-            >
-              <Link to="/login"> Sign In</Link>
-            </button>
-          </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700">Password</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                    placeholder="Password"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700">
+                    Confirm Password
+                  </label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                    placeholder="Confirm Password"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-gray-700">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                  placeholder="Email"
+                />
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="agree"
+                  checked={formData.agree}
+                  onChange={handleChange}
+                  className="mr-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                />
+                <label className="text-gray-700">
+                  I agree to the terms and conditions
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-tr from-indigo-500 to-pink-500 text-white p-2 rounded  focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              >
+                Register
+              </button>
+            </form>
+
+            <p className="text-center text-gray-600 mt-4">
+              Already have an account?
+              <button
+                onClick={() => navigate("/login")}
+                className="text-blue-500 hover:underline"
+              >
+                <Link to="/login"> Sign In</Link>
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-    </div>
-   
   );
 };
 

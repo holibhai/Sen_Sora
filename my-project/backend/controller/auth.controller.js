@@ -11,13 +11,16 @@ const signup = async (req, res) => {
       const {
         firstName,
         lastName,
-        username,
         email,
         password,
-        address,
-        phone
+        confirmPassword,
+        agree
       } = req.body;
   
+
+      if(password!=confirmPassword){
+        return res.status(400).json({ error: "Password and confirmPassword are not matched" });
+      }
 
   
       // Check if username already exists
@@ -41,10 +44,10 @@ const signup = async (req, res) => {
   
              // Insert user
       const insertQuery = `
-      INSERT INTO users ( userId,firstName, lastName, username, email, password, address, phone)
-      VALUES (?, ?, ?, ?, ?, ?, ?,?)
+      INSERT INTO users ( userId,firstName, lastName, email, password,  agree)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
-    const values = [userId, firstName, lastName, username, email, hashedPassword, address || null, phone || null];
+    const values = [userId, firstName, lastName, email, hashedPassword, agree];
 
     connection.query(insertQuery, values, (err, result) => {
       if (err) {
@@ -52,7 +55,7 @@ const signup = async (req, res) => {
         return res.status(500).json({ error: "Failed to create user" });
       }
   
-            const newUser = {  firstName, lastName, username, email };
+            const newUser = {  firstName, lastName, email };
             const token=generateTokenAndSetCookie(newUser.email, res); // You can pass the username or userId
   
             res.status(201).json({ message: "User created successfully", user: newUser,token });
