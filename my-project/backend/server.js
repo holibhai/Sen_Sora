@@ -6,8 +6,11 @@ const { connectToMySql } = require("./db/ConnectMysql");
 const authRoutes = require("./routes/auth.routes");
 const adminRoutes = require("./routes/admin.routes");
 const productRoutes=require("./routes/product.routes");
+const categoryRoutes = require("./routes/category.routes");
 const { createUsersTable } = require("./model/userModel");
 const { createAdminsTable } = require("./model/adminModel");
+const { createCategoriesTable }=require("./model/categoryModel");
+
 
 dotenv.config();
 
@@ -24,10 +27,13 @@ app.use('/uploads', express.static('uploads'));
 app.use("/api/auth", authRoutes);
 app.use("/api/admin",adminRoutes);
 app.use("/api/products",productRoutes)
+app.use("/api/categories", categoryRoutes);
+app.use("/api/categories", categoryRoutes);
 
 app.listen(PORT, () => {
 	connectToMySql();
 	createUsersTable();
 	createAdminsTable();
+	createCategoriesTable();
 	console.log(`Server Running on port ${PORT}`);
 });
