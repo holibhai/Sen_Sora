@@ -31,7 +31,7 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch("http://localhost:5000/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,6 +42,7 @@ const Register = () => {
       const data = await response.json();
       alert(data.message || "Registration successful!");
     } catch (error) {
+      console.log(error.message);
       console.error("Error:", error);
       alert("Registration failed. Please try again.");
     }

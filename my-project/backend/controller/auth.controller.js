@@ -7,66 +7,71 @@ const generateTokenAndSetCookie = require("../utils/generateToken");
 
 // Signup
 const signup = async (req, res) => {
-    try {
-      const {
-        firstName,
-        lastName,
-        email,
-        password,
-        confirmPassword,
-        agree
-      } = req.body;
-  
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+      agree,
+    } = req.body;
 
-      if(password!=confirmPassword){
-        return res.status(400).json({ error: "Password and confirmPassword are not matched" });
-      }
+    if (password !== confirmPassword) {
+      return res.status(400).json({ error: "Passwords do not match" });
+    }
 
-  
-      // Check if username already exists
-      connection.query(
-        "SELECT * FROM users WHERE email = ?",
-        [email],
-        async (err, results) => {
-          if (err) {
-            console.log("The error is "+err)
-            return res.status(500).json({ error: "Internal Server Error" });
-          }
-  
-          if (results.length > 0) {
-            return res.status(400).json({ error: "Username already exists" });
-          }
-  
-          // Hash the password
+    connection.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email],
+      async (err, results) => {
+        if (err) {
+          console.error("MySQL select error:", err);
+          return res.status(500).json({ error: "Database error" });
+        }
+
+        if (results.length > 0) {
+          return res.status(400).json({ error: "Email already registered" });
+        }
+
+        try {
           const salt = await bcryptjs.genSalt(10);
           const hashedPassword = await bcryptjs.hash(password, salt);
-          const userId = uuidv4(); // Generate a unique ID
-  
-             // Insert user
-      const insertQuery = `
-      INSERT INTO users ( userId,firstName, lastName, email, password,  agree)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `;
-    const values = [userId, firstName, lastName, email, hashedPassword, agree];
+          const userId = uuidv4();
 
-    connection.query(insertQuery, values, (err, result) => {
-      if (err) {
-        console.log(err)
-        return res.status(500).json({ error: "Failed to create user" });
-      }
-  
-            const newUser = {  firstName, lastName, email };
-            const token=generateTokenAndSetCookie(newUser.email, res); // You can pass the username or userId
-  
-            res.status(201).json({ message: "User created successfully", user: newUser,token });
+          const insertQuery = `
+            INSERT INTO users (userId, firstName, lastName, email, password, agree)
+            VALUES (?, ?, ?, ?, ?, ?)
+          `;
+          const values = [userId, firstName, lastName, email, hashedPassword, agree];
+
+          connection.query(insertQuery, values, (insertErr, result) => {
+            if (insertErr) {
+              console.error("MySQL insert error:", insertErr);
+              return res.status(500).json({ error: "Failed to register user" });
+            }
+
+            const newUser = { firstName, lastName, email };
+            const token = generateTokenAndSetCookie(newUser.email, res);
+
+            res.status(201).json({
+              message: "User registered successfully",
+              user: newUser,
+              token,
+            });
           });
+        } catch (hashErr) {
+          console.error("Hashing error:", hashErr);
+          return res.status(500).json({ error: "Server error during registration" });
         }
-      );
-    } catch (error) {
-      console.log("Error in signup controller", error.message);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  };
+      }
+    );
+  } catch (error) {
+    console.error("Signup controller error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 
   const login = async (req, res) => {
     try {

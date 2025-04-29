@@ -16,7 +16,7 @@ const createCategoriesTable = () => {
     } else {
       console.log("Categories table created or already exists.");
     }
-    connection.end(); 
+  
   });
 };
 
