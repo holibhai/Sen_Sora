@@ -1,30 +1,30 @@
-const mongoose = require('mongoose');
+const { connection } = require("../db/ConnectMysql");
 
-const cartItemSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  product: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product',
-    required: true
-  },
-  quantity: {
-    type: Number,
-    required: true,
-    default: 1
-  },
-  addedAt: {
-    type: Date,
-    default: Date.now
-  },
-  price:{
-    type:Number,
-    required:true,
-    default:0
+// Create Cart Items table
+const createCartItemsTable = `
+  CREATE TABLE IF NOT EXISTS cart_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    productId INT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    addedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    FOREIGN KEY (userId) REFERENCES users(id),
+    FOREIGN KEY (productId) REFERENCES products(id)
+  );
+`;
+
+connection.query(createCartItemsTable, (err, result) => {
+  if (err) {
+    console.error('Failed to create cart_items table:', err);
+  } else {
+    console.log('Cart_items table created or already exists.');
   }
+  // Always close the connection
+  connection.end();
 });
 
-module.exports = mongoose.model('CartItem', cartItemSchema);
+
+module.exports = {
+  createCartItemsTable,
+};
