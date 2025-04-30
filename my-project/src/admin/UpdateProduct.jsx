@@ -15,7 +15,7 @@ const UpdateProduct = () => {
     price: "",
     description: "",
     stock: "",
-    image: null,
+    imageUrl: null,
   });
 
   const [preview, setPreview] = useState(null);
@@ -26,12 +26,15 @@ const UpdateProduct = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`/api/products/${id}`);
+        const res = await axios.get(`http://localhost:5000/api/products/${id}`);
         setFormData({
           ...res.data,
-          image: null, // don't prefill image file
+          imageUrl: null, // don't prefill image file
         });
-        setPreview(res.data.imageUrl);
+        // Set the full URL for the preview
+        setPreview(
+          res.data.imageUrl ? `http://localhost:5000${res.data.imageUrl}` : null
+        );
       } catch (err) {
         setError("Failed to load product.");
       }
@@ -49,7 +52,7 @@ const UpdateProduct = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData((prev) => ({ ...prev, image: file }));
+      setFormData({ ...formData, image: file });
       setPreview(URL.createObjectURL(file));
     }
   };
@@ -65,7 +68,7 @@ const UpdateProduct = () => {
     });
 
     try {
-      await axios.put(`/api/products/${id}`, form, {
+      await axios.put(`http://localhost:5000/api/products/${id}`, form, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -80,7 +83,9 @@ const UpdateProduct = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Update Product</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">
+          Update Product
+        </h2>
 
         {error && (
           <div className="flex items-center gap-2 mb-4 bg-red-100 text-red-700 px-4 py-2 rounded">
@@ -94,7 +99,10 @@ const UpdateProduct = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           <input
             type="text"
             name="name"
@@ -160,7 +168,9 @@ const UpdateProduct = () => {
           />
 
           <div className="col-span-full">
-            <label className="block mb-2 font-medium text-gray-700">Product Image</label>
+            <label className="block mb-2 font-medium text-gray-700">
+              Product Image
+            </label>
             <div className="flex items-center gap-4">
               <label className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 inline-flex items-center gap-2">
                 <Upload size={18} />

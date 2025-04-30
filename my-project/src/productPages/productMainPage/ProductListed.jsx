@@ -31,7 +31,7 @@ const ProductListed = () => {
           <div>
             <h1 className="text-gray-500 font-semibold text-lg py-4">CATAGORIES</h1>
             <div>
-                <CatagorieList />
+                <CategoryList />
             </div>
           </div>
           <div>
