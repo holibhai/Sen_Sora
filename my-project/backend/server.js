@@ -11,6 +11,7 @@ const { createUsersTable } = require("./model/userModel");
 const { createAdminsTable } = require("./model/adminModel");
 const cors = require("cors");
 const { createCategoriesTable }=require("./model/categoryModel");
+const { createProductsTable } = require("./model/productModel");
 
 
 dotenv.config();
@@ -34,12 +35,13 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin",adminRoutes);
 app.use("/api/products",productRoutes)
 app.use("/api/categories", categoryRoutes);
-// app.use("/api/categories", categoryRoutes);
+
 
 app.listen(PORT, () => {
 	connectToMySql();
 	createUsersTable();
 	createAdminsTable();
 	createCategoriesTable();
+	createProductsTable()
 	console.log(`Server Running on port ${PORT}`); 
 });

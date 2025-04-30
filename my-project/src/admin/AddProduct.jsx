@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { Upload, CheckCircle, XCircle } from "lucide-react";
 
 const AddProduct = () => {
+  const [preview, setPreview] = useState(null);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+
   const [formData, setFormData] = useState({
     name: "",
     type: "",
@@ -12,10 +16,6 @@ const AddProduct = () => {
     stock: "",
     image: null,
   });
-
-  const [preview, setPreview] = useState(null);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,35 +32,67 @@ const AddProduct = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validate
-    if (!formData.name || !formData.type || !formData.price || !formData.image) {
+    if (
+      !formData.name ||
+      !formData.type ||
+      !formData.price ||
+      !formData.image
+    ) {
       setError("Name, Type, Price and Image are required.");
       return;
     }
 
-    // Simulate successful submission
-    console.log("Submitting Product:", formData);
-    setSuccess("Product added successfully!");
-    setFormData({
-      name: "",
-      type: "",
-      category: "",
-      flavor: "",
-      price: "",
-      description: "",
-      stock: "",
-      image: null,
-    });
-    setPreview(null);
+    try {
+      // Create FormData object
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("type", formData.type);
+      formDataToSend.append("category", formData.category);
+      formDataToSend.append("flavor", formData.flavor);
+      formDataToSend.append("price", formData.price);
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("stock", formData.stock);
+      formDataToSend.append("image", formData.image);
+      // Send to backend
+      const response = await fetch("http://localhost:5000/api/products", {
+        method: "POST",
+        body: formDataToSend,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to create product");
+      }
+
+      // Simulate successful submission
+      console.log("Submitting Product:", formData);
+      setSuccess("Product added successfully!");
+      setFormData({
+        name: "",
+        type: "",
+        category: "",
+        flavor: "",
+        price: "",
+        description: "",
+        stock: "",
+        image: null,
+      });
+      setPreview(null);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Add New Product</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">
+          Add New Product
+        </h2>
 
         {error && (
           <div className="flex items-center gap-2 mb-4 bg-red-100 text-red-700 px-4 py-2 rounded">
@@ -74,7 +106,10 @@ const AddProduct = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           <input
             type="text"
             name="name"
@@ -140,7 +175,9 @@ const AddProduct = () => {
           />
 
           <div className="col-span-full">
-            <label className="block mb-2 font-medium text-gray-700">Product Image *</label>
+            <label className="block mb-2 font-medium text-gray-700">
+              Product Image *
+            </label>
             <div className="flex items-center gap-4">
               <label className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 inline-flex items-center gap-2">
                 <Upload size={18} />

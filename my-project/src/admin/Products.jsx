@@ -1,26 +1,51 @@
-import React, { useState } from 'react';
-import { Pencil, Trash2, Plus } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-
-const sampleProducts = Array.from({ length: 50 }).map((_, index) => ({
-  id: index + 1,
-  name: `Sample ${index % 2 === 0 ? 'Cake' : 'Gift'} ${index + 1}`,
-  category: index % 2 === 0 ? 'Cake' : 'Gift',
-  price: (Math.random() * 100 + 10).toFixed(2),
-  image: `https://via.placeholder.com/150?text=${index % 2 === 0 ? 'Cake' : 'Gift'}`,
-}));
+import React, { useEffect, useState } from "react";
+import { Pencil, Trash2, Plus } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 const PRODUCTS_PER_PAGE = 8;
 
 const Products = () => {
-  const [products, setProducts] = useState(sampleProducts);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
+  const [search, setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
   const navigate = useNavigate();
 
-  const handleDelete = (id) => {
-    setProducts(products.filter((product) => product.id !== id));
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/products");
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        const data = await response.json();
+        setProducts(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete product");
+      }
+
+      setProducts(products.filter((product) => product.id !== id));
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const filteredProducts = products.filter(
@@ -31,7 +56,26 @@ const Products = () => {
 
   const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
   const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
-  const currentProducts = filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+  const currentProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + PRODUCTS_PER_PAGE
+  );
+
+  if (loading) {
+    return (
+      <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+        <div className="text-xl">Loading products...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+        <div className="text-xl text-red-500">Error: {error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -39,7 +83,7 @@ const Products = () => {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-gray-800">Manage Products</h1>
           <button
-            onClick={() => navigate('/admin/addProduct')}
+            onClick={() => navigate("/admin/addProduct")}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800 transition"
           >
             <Plus size={18} /> Add Product
@@ -73,24 +117,27 @@ const Products = () => {
               className="bg-white p-4 rounded shadow-md hover:shadow-lg transition border border-gray-200"
             >
               <img
-                src={product.image}
+                src={`http://localhost:5000${product.imageUrl}`}
                 alt={product.name}
                 className="w-full h-40 object-cover rounded mb-4"
               />
-              <h2 className="text-lg font-semibold text-gray-800 mb-2">{product.name}</h2>
+              <h2 className="text-lg font-semibold text-gray-800 mb-2">
+                {product.name}
+              </h2>
               <p className="text-sm text-gray-600 mb-1">
-                Category: <span className="font-medium">{product.category}</span>
+                Category:{" "}
+                <span className="font-medium">{product.category}</span>
               </p>
               <p className="text-sm text-gray-600 mb-4">
                 Price: <span className="font-medium">${product.price}</span>
               </p>
               <div className="flex justify-between">
-                <Link to="/admin/updateProduct">
-                <button className="text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                  <Pencil size={16} /> Edit
-                </button>
+                <Link to={`/admin/updateProduct/${product.id}`}>
+                  <button className="text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                    <Pencil size={16} /> Edit
+                  </button>
                 </Link>
-               
+
                 <button
                   onClick={() => handleDelete(product.id)}
                   className="text-red-600 hover:text-red-800 flex items-center gap-1"
@@ -109,8 +156,8 @@ const Products = () => {
               key={i + 1}
               className={`px-3 py-1 rounded-md border text-sm font-medium transition-all duration-150 ${
                 currentPage === i + 1
-                  ? 'bg-yellow-400 text-white border-yellow-500'
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-yellow-100'
+                  ? "bg-yellow-400 text-white border-yellow-500"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-yellow-100"
               }`}
               onClick={() => setCurrentPage(i + 1)}
             >

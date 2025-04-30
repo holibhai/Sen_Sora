@@ -6,7 +6,7 @@ const upload=require("../middlewares/upload")
 router.post('/', upload.single('image'), createProduct);
 router.get('/', getAllProducts);
 router.get('/:id', getProductById);
-router.put('/:id', updateProductById);
+router.put('/:id',upload.single('image'), updateProductById);
 router.delete('/:id', deleteProductById);
 
 
