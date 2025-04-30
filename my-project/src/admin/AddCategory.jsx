@@ -1,27 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, XCircle } from "lucide-react";
 
-const initialCategories = [
-  { id: 1, type: "Cake", category: "Birthday Cake" },
-  { id: 2, type: "Gift", category: "Flowers" },
-  { id: 3, type: "Cake", category: "Wedding Cake" },
-];
-
 const AddCategory = () => {
-  const [categories, setCategories] = useState(initialCategories);
+  const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState({ type: "", category: "" });
   const [editId, setEditId] = useState(null);
   const [error, setError] = useState("");
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     if (!newCategory.type || !newCategory.category) {
       setError("Both fields are required.");
       return;
     }
 
-    const newId = categories.length ? Math.max(...categories.map(c => c.id)) + 1 : 1;
-    const newEntry = { id: newId, ...newCategory };
-    setCategories([...categories, newEntry]);
+    try {
+      const response = await fetch("http://localhost:5000/api/categories/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newCategory),
+      });
+
+      const data = await response.json();
+      alert(data.message || "Registration successful!");
+    } catch (error) {
+      console.log(error.message);
+      console.error("Error:", error);
+      alert("Registration failed. Please try again.");
+    }
     setNewCategory({ type: "", category: "" });
     setError("");
   };
@@ -57,6 +64,25 @@ const AddCategory = () => {
     setNewCategory({ type: "", category: "" });
     setError("");
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/categories/getAll`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        setCategories(data);
+      } catch (error) {
+        console.log("error in fetching", error);
+      }
+    };
+
+    fetchData();
+  }, []); // Only runs on mount
 
   return (
     <div className="p-6  min-h-screen">
@@ -129,7 +155,7 @@ const AddCategory = () => {
             <tbody>
               {categories.map((cat) => (
                 <tr key={cat.id} className="hover:bg-gray-50 transition">
-                  <td className="px-4 py-2 border">{cat.id}</td>
+                  <td className="px-4 py-2 border">{cat.categoryId}</td>
                   <td className="px-4 py-2 border">{cat.type}</td>
                   <td className="px-4 py-2 border">{cat.category}</td>
                   <td className="px-4 py-2 border">
