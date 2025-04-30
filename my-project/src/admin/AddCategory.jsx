@@ -33,9 +33,29 @@ const AddCategory = () => {
     setError("");
   };
 
-  const handleDelete = (id) => {
-    setCategories(categories.filter((cat) => cat.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/categories/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        setCategories(categories.filter((cat) => cat.id !== id));
+        alert(data.message || "Category deleted successfully.");
+      } else {
+        alert(data.error || "Failed to delete category.");
+      }
+    } catch (error) {
+      console.error("Delete failed:", error);
+      alert("Error occurred while deleting the category.");
+    }
   };
+  
 
   const handleEdit = (cat) => {
     setEditId(cat.id);
@@ -82,7 +102,7 @@ const AddCategory = () => {
     };
 
     fetchData();
-  }, []); // Only runs on mount
+  }, [categories]); // Only runs on mount
 
   return (
     <div className="p-6  min-h-screen">
@@ -167,7 +187,7 @@ const AddCategory = () => {
                         <Pencil size={18} />
                       </button>
                       <button
-                        onClick={() => handleDelete(cat.id)}
+                        onClick={() => handleDelete(cat.categoryId)}
                         className="text-red-600 hover:text-red-800"
                       >
                         <Trash2 size={18} />
