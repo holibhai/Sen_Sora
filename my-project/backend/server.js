@@ -11,6 +11,7 @@ const { createUsersTable } = require("./model/userModel");
 const { createAdminsTable } = require("./model/adminModel");
 const cors = require("cors");
 const { createCategoriesTable }=require("./model/categoryModel");
+const { createProductsTable } = require("./model/productModel");
 
 
 dotenv.config();
@@ -41,5 +42,6 @@ app.listen(PORT, () => {
 	createUsersTable();
 	createAdminsTable();
 	createCategoriesTable();
+	createProductsTable()
 	console.log(`Server Running on port ${PORT}`); 
 });
