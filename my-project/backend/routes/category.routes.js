@@ -8,7 +8,7 @@ const {
 } = require("../controller/category.controller");
 
 const router = express.Router();
-const { getCategories } = require("../models/categoryModel");
+const { getCategories } = require("../model/categoryModel");
 
 
 // Route to create a new category
