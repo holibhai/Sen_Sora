@@ -1,6 +1,6 @@
 import React from "react";
 import PriceRange from "./PriceRange";
-import CatagorieList from "./CategoryList";
+import CategoryList from "./CategoryList";
 import OfferList from "./OfferList";
 import LatestProducts from "./LatestProducts";
 import { Grid3x3 } from 'lucide-react';
