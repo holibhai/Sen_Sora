@@ -3,7 +3,7 @@ import { Heart, ShoppingCart } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const ITEMS_PER_PAGE = 12; // Show 4 products per row
+const ITEMS_PER_PAGE = 12; // 4x3 grid layout
 
 const GridProduct = () => {
   const navigate = useNavigate();
@@ -12,7 +12,6 @@ const GridProduct = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Calculate totalPages after products is initialized
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
@@ -24,7 +23,7 @@ const GridProduct = () => {
         }
         const data = await response.json();
         setProducts(data);
-        console.log(products);
+        console.log("Fetched products:", data); // For debugging
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -40,7 +39,6 @@ const GridProduct = () => {
     currentPage * ITEMS_PER_PAGE
   );
 
-  // Pagination function to show page numbers with ellipsis
   const getPaginationNumbers = () => {
     const range = [];
     if (totalPages <= 5) {
@@ -65,9 +63,10 @@ const GridProduct = () => {
     return range;
   };
 
-  const handleClick = () => {
-    navigate("/productDetail");
+  const handleClick = (id) => {
+    navigate(`/productDetail/${id}`);
   };
+
   if (loading) {
     return (
       <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
@@ -83,19 +82,20 @@ const GridProduct = () => {
       </div>
     );
   }
+
   return (
-    <div className="pl-10 w-full ">
-      {/* Grid container */}
-      <div className="grid grid-cols-4 gap-6 w-full">
+    <div className="pl-10 pr-10 w-full">
+      {/* Product Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
         {paginatedProducts.map((product) => (
           <div
             key={product.id}
-            className="w-full h-full border border-gray-300   relative  hover:shadow-xl transition-shadow"
-            onClick={handleClick}
+            className="w-full h-full border border-gray-300 relative hover:shadow-xl transition-shadow rounded-lg overflow-hidden bg-white cursor-pointer"
+            onClick={() => handleClick(product.id)}
           >
             {/* Favorite Icon */}
-            <span className="absolute top-3 right-3 text-gray-600 hover:text-red-500 cursor-pointer">
-              <Heart className="w-5 h-5 text-white" />
+            <span className="absolute top-3 right-3 text-gray-600 hover:text-red-500 cursor-pointer z-10">
+              <Heart className="w-5 h-5" />
             </span>
 
             {/* Product Image */}
@@ -107,22 +107,19 @@ const GridProduct = () => {
 
             <div className="flex justify-between items-center p-4">
               <div>
-                <h1 className="text-gray-600 font-semibold">{product.name}</h1>
+                <h1 className="text-gray-800 font-semibold">{product.name}</h1>
                 <div className="flex gap-3 items-baseline">
-                  <p className="text-gray-400 line-through text-xs ">
-                    {product.price}
+                  <p className="text-gray-400 line-through text-sm">
+                    ₹{(product.price * 1.2).toFixed(2)}
                   </p>
-                  <p className=" text-red-600">{product.price}</p>
+                  <p className="text-red-600 font-bold">₹{product.price}</p>
                 </div>
-                <h1 className="text-gray-300 text-xs bg-slate-700 inline-block px-3 py-1 rounded-xl my-3">
+                <span className="text-xs bg-green-600 text-white px-3 py-1 rounded-full mt-2 inline-block">
                   In stock
-                </h1>
+                </span>
               </div>
-              <div
-                className="bg-gray-700
- p-1 rounded-full"
-              >
-                <ShoppingCart className="text-white hover:cursor-pointer p-1" />
+              <div className="bg-gray-700 p-2 rounded-full">
+                <ShoppingCart className="text-white w-5 h-5" />
               </div>
             </div>
           </div>
@@ -130,18 +127,18 @@ const GridProduct = () => {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center mt-6 space-x-2">
+      <div className="flex justify-center mt-8 space-x-2">
         <button
           onClick={() => setCurrentPage(1)}
           disabled={currentPage === 1}
-          className="px-3 py-2 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50"
+          className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
         >
           {"<<"}
         </button>
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className="px-3 py-2 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50"
+          className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
         >
           {"<"}
         </button>
@@ -153,27 +150,27 @@ const GridProduct = () => {
             className={`px-3 py-2 rounded ${
               currentPage === num
                 ? "bg-pink-500 text-white"
-                : "bg-gray-300 hover:bg-gray-400"
+                : "bg-gray-200 hover:bg-gray-300"
             } ${num === "..." ? "cursor-default" : ""}`}
             disabled={num === "..."}
           >
             {num}
           </button>
         ))}
-
+               
         <button
           onClick={() =>
             setCurrentPage((prev) => Math.min(prev + 1, totalPages))
           }
           disabled={currentPage === totalPages}
-          className="px-3 py-2 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50"
+          className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
         >
           {">"}
         </button>
         <button
           onClick={() => setCurrentPage(totalPages)}
           disabled={currentPage === totalPages}
-          className="px-3 py-2 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50"
+          className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
         >
           {">>"}
         </button>
@@ -181,4 +178,5 @@ const GridProduct = () => {
     </div>
   );
 };
+
 export default GridProduct;
