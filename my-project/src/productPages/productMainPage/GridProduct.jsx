@@ -1,78 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Heart, ShoppingCart } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-// Sample product data (Replace with actual data)
-const products = [
-  {
-    id: 1,
-    image: require("../../assets/cake1.jpg"),
-    name: "Grey Armchair",
-    price: "$120",
-  },
-  {
-    id: 2,
-    image: require("../../assets/cake2.jpg"),
-    name: "Orange  Chair",
-    price: "$150",
-  },
-  {
-    id: 3,
-    image: require("../../assets/cake3.jpg"),
-    name: "Modern  Chair",
-    price: "$180",
-  },
-  {
-    id: 4,
-    image: require("../../assets/cake4.jpg"),
-    name: "Teal  Sofa",
-    price: "$220",
-  },
-  {
-    id: 5,
-    image: require("../../assets/cake5.avif"),
-    name: "Colorful Armchairs",
-    price: "$250",
-  },
-  {
-    id: 1,
-    image: require("../../assets/cake6.jpg"),
-    name: "Grey Armchair",
-    price: "$120",
-  },
-  {
-    id: 2,
-    image: require("../../assets/cake7.jpg"),
-    name: "Orange  Chair",
-    price: "$150",
-  },
-  {
-    id: 3,
-    image: require("../../assets/cake8.jpg"),
-    name: "Modern  Chair",
-    price: "$180",
-  },
-  {
-    id: 4,
-    image: require("../../assets/cake9.jpg"),
-    name: "Teal  Sofa",
-    price: "$220",
-  },
-  {
-    id: 5,
-    image: require("../../assets/cake10.jpg"),
-    name: "Colorful Armchairs",
-    price: "$250",
-  },
-];
-
 const ITEMS_PER_PAGE = 12; // Show 4 products per row
 
-const GridProduct=()=> {
-    const navigate=useNavigate();
+const GridProduct = () => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Calculate totalPages after products is initialized
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/products");
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        const data = await response.json();
+        setProducts(data);
+        console.log(products);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const paginatedProducts = products.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -105,9 +66,23 @@ const GridProduct=()=> {
   };
 
   const handleClick = () => {
-    navigate("/productDetail")
+    navigate("/productDetail");
   };
+  if (loading) {
+    return (
+      <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+        <div className="text-xl">Loading products...</div>
+      </div>
+    );
+  }
 
+  if (error) {
+    return (
+      <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+        <div className="text-xl text-red-500">Error: {error}</div>
+      </div>
+    );
+  }
   return (
     <div className="pl-10 w-full ">
       {/* Grid container */}
@@ -125,7 +100,7 @@ const GridProduct=()=> {
 
             {/* Product Image */}
             <img
-              src={product.image}
+              src={`http://localhost:5000${product.imageUrl}`}
               alt={product.name}
               className="w-full h-[200px] object-cover"
             />
@@ -139,7 +114,9 @@ const GridProduct=()=> {
                   </p>
                   <p className=" text-red-600">{product.price}</p>
                 </div>
-                <h1 className="text-gray-300 text-xs bg-slate-700 inline-block px-3 py-1 rounded-xl my-3">In stock</h1>
+                <h1 className="text-gray-300 text-xs bg-slate-700 inline-block px-3 py-1 rounded-xl my-3">
+                  In stock
+                </h1>
               </div>
               <div
                 className="bg-gray-700
@@ -203,5 +180,5 @@ const GridProduct=()=> {
       </div>
     </div>
   );
-}
+};
 export default GridProduct;
