@@ -1,17 +1,17 @@
 const express=require("express")
 const router = express.Router();
 const upload=require("../middlewares/upload");
-const { signup } = require("../controller/auth.controller");
-const { addToCart, getCartItems, updateCartItem, removeFromCart, clearCart, checkout } = require("../controller/cart.controllers");
+// const { signup } = require("../controller/auth.controller");
+const { addToCart, getCartItems, updateCartItem, removeFromCart, clearCart, checkout } = require("../controller/cartItem.controller");
 
 // Apply authentication middleware to all cart routes
-router.use(signup);
+// router.use(signup); 
 
 // Add item to cart
 router.post('/add', addToCart);
 
 // Get user's cart items
-router.get('/', getCartItems);
+router.get('/:userId', getCartItems);
 
 // Update cart item quantity
 router.put('/:id',updateCartItem);

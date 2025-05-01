@@ -7,12 +7,17 @@ const authRoutes = require("./routes/auth.routes");
 const adminRoutes = require("./routes/admin.routes");
 const productRoutes=require("./routes/product.routes");
 const categoryRoutes = require("./routes/category.routes");
+const cartRoutes=require("./routes/cartItem.routes");
 const { createUsersTable } = require("./model/userModel");
 const { createAdminsTable } = require("./model/adminModel");
 const cors = require("cors");
 const { createCategoriesTable }=require("./model/categoryModel");
 const { createProductsTable } = require("./model/productModel");
+const {  
+	createCartItemsTable
 
+} = require("./model/cartItemModel");
+            
 
 dotenv.config();
 
@@ -35,6 +40,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin",adminRoutes);
 app.use("/api/products",productRoutes)
 app.use("/api/categories", categoryRoutes);
+app.use("/api/cart",cartRoutes);
 
 
 app.listen(PORT, () => {
@@ -42,6 +48,7 @@ app.listen(PORT, () => {
 	createUsersTable();
 	createAdminsTable();
 	createCategoriesTable();
-	createProductsTable()
+	createProductsTable();
+	createCartItemsTable();
 	console.log(`Server Running on port ${PORT}`); 
 });

@@ -42,6 +42,52 @@ const ProductDetail = () => {
 
   const isInStock = product.stock > 0;
 
+
+  const handleAddToCart = async (productId,quantity, price) => {
+    const userId = localStorage.getItem("userId");
+    console.log(productId);
+    console.log(quantity);
+    console.log(price);
+    console.log(userId)
+
+  
+    if (!userId) {
+      alert("User not logged in.");
+      return;
+    }
+  
+    try {
+      const response = await fetch("http://localhost:5000/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          
+          productId,
+          userId,
+          quantity,
+          price
+        })
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert("Item added to cart!");
+        navigate("/checkout")
+        console.log("Cart item ID:", data.id);
+      } else {
+        alert(data.message || "Failed to add item to cart.");
+      }
+  
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      alert("An error occurred while adding item to cart.");
+    }
+  };
+  
+
   return (
     <div className="mt-48">
       <div className="mx-10 md:mx-36">
@@ -124,9 +170,10 @@ const ProductDetail = () => {
                 </button>
               </div>
 
-              <Link to={isInStock ? "/checkout" : "#"}>
+              
                 <button
                   disabled={!isInStock}
+                  onClick={()=>handleAddToCart(product.id,quantity,product.price)}
                   className={`px-6 py-2 text-sm font-bold rounded ${
                     isInStock
                       ? "bg-gray-700 hover:bg-gray-800 text-white"
@@ -135,7 +182,7 @@ const ProductDetail = () => {
                 >
                   ADD TO CART
                 </button>
-              </Link>
+              
             </div>
 
             {/* Description Section */}
