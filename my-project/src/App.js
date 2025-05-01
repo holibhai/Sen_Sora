@@ -20,6 +20,7 @@ import Orders from "./admin/Orders";
 import AddCategory from "./admin/AddCategory";
 import AddProduct from "./admin/AddProduct";
 import UpdateProduct from "./admin/UpdateProduct";
+import DeliveryCost from "./admin/DeliveryCost";
 
 const App = () => {
   const location = useLocation();
@@ -51,6 +52,8 @@ const App = () => {
           <Route path="category" element={<AddCategory />} />
           <Route path="addProduct" element={<AddProduct />} />
           <Route path="updateProduct/:id" element={<UpdateProduct />} />
+          <Route path="deliverycost" element={<DeliveryCost />} />
+
 
 
 

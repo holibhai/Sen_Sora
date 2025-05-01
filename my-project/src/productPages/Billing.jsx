@@ -7,13 +7,13 @@ import { Link } from 'react-router-dom';
 
 
 const Billing = () => {
-    const [deliveryType, setDeliveryType] = useState("PickUp");
+    // const [deliveryType, setDeliveryType] = useState("PickUp");
 
    
 
-    const handleChangeDelivery = (event) => {
-        setDeliveryType(event.target.value);
-    };
+    // const handleChangeDelivery = (event) => {
+    //     setDeliveryType(event.target.value);
+    // };
 
    
 
@@ -21,7 +21,7 @@ const Billing = () => {
         <div className='mt-48 mx-48'>
             <div className='grid grid-cols-1 md:grid-cols-2 border-b border-gray-400 pb-5'>
                 <div className='flex flex-col gap-3'>
-                    <div className='flex flex-col gap-5'>
+                    {/* <div className='flex flex-col gap-5'>
                         <h1 className='text-2xl font-semibold text-gray-700'>BILLING DETAILS</h1>
                         <div className='flex justify-between items-center'>
                             <div className='flex flex-col gap-2 '>
@@ -41,7 +41,7 @@ const Billing = () => {
                             <label htmlFor="mobileNumber" className='text-gray-500'>Mobile Number</label>
                             <input type="text" className='bg-transparent border border-gray-400 py-3 px-10' />
                         </div>
-                    </div>
+                    </div> */}
                     <div className='my-10 relative '>
                         <img src={image} alt="" className=' w-full object-cover h-[600px]' />
                         <button className='absolute top-24 pt-2 left-24 font-semibold text-white'><Link to="/offerProduct">Shop now</Link></button>
@@ -49,8 +49,8 @@ const Billing = () => {
                 </div>
 
                 <div className='flex flex-col pl-20 '>
-                    <h1 className='text-2xl font-semibold text-gray-700'>DELIVERY TYPE</h1>
-                    <div className='flex justify-between items-center my-5 border-b border-gray-400 pb-5'>
+                    {/* <h1 className='text-2xl font-semibold text-gray-700'>DELIVERY TYPE</h1> */}
+                    {/* <div className='flex justify-between items-center my-5 border-b border-gray-400 pb-5'>
                         <div>
                             <input
                                 type="radio"
@@ -73,8 +73,9 @@ const Billing = () => {
                             />
                             <label className='text-gray-500'>Delivery</label>
                         </div>
-                    </div>
-                    {deliveryType === "PickUp" ? <PickUp /> : <Delivery />}
+                    </div> */}
+                    {/* {deliveryType === "PickUp" ? <PickUp /> : <Delivery />} */}
+                    <Delivery/>
                 </div>
             </div>
             <div className='w-full  '>
