@@ -67,7 +67,7 @@ const AddProduct = () => {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to create product");
       }
-
+      
       // Simulate successful submission
       console.log("Submitting Product:", formData);
       setSuccess("Product added successfully!");
@@ -99,7 +99,7 @@ const AddProduct = () => {
             <XCircle size={18} /> {error}
           </div>
         )}
-
+                     
         {success && (
           <div className="flex items-center gap-2 mb-4 bg-green-100 text-green-700 px-4 py-2 rounded">
             <CheckCircle size={18} /> {success}

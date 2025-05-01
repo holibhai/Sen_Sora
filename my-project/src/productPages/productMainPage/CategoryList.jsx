@@ -7,8 +7,12 @@ const CategoryList = () => {
   const [hoveredCategory, setHoveredCategory] = useState(null);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/categories")
-      .then((res) => setCategories(res.data))
+    axios
+      .get("http://localhost:5000/api/categories/getAll")
+      .then((res) => {
+        setCategories(res.data); // This will update later
+       
+      })
       .catch((err) => console.error("Fetch error:", err));
   }, []);
 
