@@ -26,17 +26,46 @@ const CheckOut = () => {
   }, []);
 
   // Quantity change handlers
-  const handleIncrease = (index) => {
+  const handleIncrease = async (index,cartId) => {
+    console.log(cartId)
     const updatedData = [...pdata];
     updatedData[index].quantity += 1;
     setPdata(updatedData);
+    try {
+      const res = await fetch(`http://localhost:5000/api/cart/increment/${cartId}`, {
+        method: 'PUT',
+      });
+
+      if (res.ok) {
+        // Successfully updated quantity on backend
+      } else {
+        console.error("Failed to increase quantity");
+      }
+    } catch (error) {
+      console.error("Error increasing quantity:", error);
+    }
   };
 
-  const handleDecrease = (index) => {
+  const handleDecrease = async (index,cartId) => {
+    console.log(index);
+    
     const updatedData = [...pdata];
     if (updatedData[index].quantity > 1) {
       updatedData[index].quantity -= 1;
       setPdata(updatedData);
+      try {
+        const res = await fetch(`http://localhost:5000/api/cart/decrement/${cartId}`, {
+          method: 'PUT',
+        });
+
+        if (res.ok) {
+          // Successfully updated quantity on backend
+        } else {
+          console.error("Failed to decrease quantity");
+        }
+      } catch (error) {
+        console.error("Error decreasing quantity:", error);
+      }
     }
   };
 
@@ -73,7 +102,7 @@ const CheckOut = () => {
                   <div className="flex items-center gap-12 pb-4">
                     <div className="flex items-center bg-gray-600 my-3">
                       <button
-                        onClick={() => handleDecrease(index)}
+                        onClick={() => handleDecrease(index,item.id)}
                         className="p-2 bg-gray-400 shadow hover:bg-gray-200 transition"
                       >
                         <Minus size={18} className="text-gray-600" />
@@ -85,7 +114,7 @@ const CheckOut = () => {
                         className="w-12 mx-2 text-center bg-transparent text-white text-lg font-semibold focus:outline-none"
                       />
                       <button
-                        onClick={() => handleIncrease(index)}
+                        onClick={() => handleIncrease(index,item.id)}
                         className="p-2 bg-gray-400 shadow hover:bg-gray-200 transition"
                       >
                         <Plus size={18} className="text-gray-600" />

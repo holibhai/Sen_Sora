@@ -110,28 +110,70 @@ exports.getCartItems = (req, res) => {
 
 
 // Update cart item quantity
-exports.updateCartItem = async (req, res) => {
-  try {
-    const { quantity } = req.body;
-    const cartItemId = req.params.id;
-    const userId = req.user._id;
+// exports.updateCartItem = async (req, res) => {
+//   try {
+//     const { quantity } = req.body;
+//     const cartItemId = req.params.id;
+//     const userId = req.user._id;
 
-    if (!quantity || quantity < 1) {
-      return res.status(400).json({ message: 'Invalid quantity' });
+//     if (!quantity || quantity < 1) {
+//       return res.status(400).json({ message: 'Invalid quantity' });
+//     }
+
+//     const cartItem = await CartItem.findOne({ _id: cartItemId, userId });
+//     if (!cartItem) {
+//       return res.status(404).json({ message: 'Cart item not found' });
+//     }
+
+//     cartItem.quantity = quantity;
+//     await cartItem.save();
+
+//     res.status(200).json(cartItem);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+exports.incrementQuantity = (req, res) => {
+  const cartId = req.params.id;
+
+  const query = "UPDATE  cart_items SET quantity = quantity + 1 WHERE id = ?";
+
+  connection.query(query, [cartId], (err, result) => {
+    if (err) {
+      console.error("Error updating product quantity:", err);
+      return res.status(500).json({ message: "Server error" });
     }
 
-    const cartItem = await CartItem.findOne({ _id: cartItemId, userId });
-    if (!cartItem) {
-      return res.status(404).json({ message: 'Cart item not found' });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    cartItem.quantity = quantity;
-    await cartItem.save();
+    res.status(200).json({ message: "Product quantity updated successfully" });
+  });
+};
 
-    res.status(200).json(cartItem);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+exports.decrementQuantity = (req, res) => {
+  const cartId = req.params.id;
+
+  const query = `
+    UPDATE cart_items 
+    SET quantity = quantity - 1 
+    WHERE id = ? AND quantity > 1
+  `;
+
+  connection.query(query, [cartId], (err, result) => {
+    if (err) {
+      console.error("Error updating product quantity:", err);
+      return res.status(500).json({ message: "Server error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({ message: "Cannot decrement quantity below 1 or product not found" });
+    }
+
+    res.status(200).json({ message: "Product quantity decremented successfully" });
+  });
 };
 
 // Remove item from cart
