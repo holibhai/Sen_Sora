@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Eye,
   Pencil,
@@ -9,37 +9,6 @@ import {
   Search,
 } from "lucide-react";
 
-const sampleOrders = [
-  {
-    id: "ORD1001",
-    customer: "Alice Johnson",
-    date: "2025-04-20",
-    status: "Pending",
-    total: "$45.99",
-  },
-  {
-    id: "ORD1002",
-    customer: "Bob Smith",
-    date: "2025-04-21",
-    status: "Completed",
-    total: "$89.50",
-  },
-  {
-    id: "ORD1003",
-    customer: "Carol King",
-    date: "2025-04-22",
-    status: "Cancelled",
-    total: "$0.00",
-  },
-  {
-    id: "ORD1004",
-    customer: "Daniel Green",
-    date: "2025-04-23",
-    status: "Pending",
-    total: "$24.75",
-  },
-];
-
 const getStatusBadge = (status) => {
   switch (status) {
     case "Completed":
@@ -48,7 +17,7 @@ const getStatusBadge = (status) => {
           <CheckCircle size={14} /> Completed
         </span>
       );
-    case "Pending":
+    case "pending":
       return (
         <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-xs flex items-center gap-1">
           <Clock size={14} /> Pending
@@ -66,12 +35,50 @@ const getStatusBadge = (status) => {
 };
 
 const Orders = () => {
-  const [orders] = useState(sampleOrders);
+  const [orders, setOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const filteredOrders = orders.filter((order) =>
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/order/");
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        const data = await response.json();
+        setOrders(data);
+        console.log("Fetched products:", data); // For debugging
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  /*const filteredOrders = orders.filter((order) =>
     order.customer.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  );*/
+
+  if (loading) {
+    return (
+      <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+        <div className="text-xl">Loading orders...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+        <div className="text-xl text-red-500">Error: {error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 w-full min-h-screen bg-gray-50">
@@ -94,7 +101,6 @@ const Orders = () => {
           <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
             <tr>
               <th className="px-6 py-4">Order ID</th>
-              <th className="px-6 py-4">Customer</th>
               <th className="px-6 py-4">Date</th>
               <th className="px-6 py-4">Status</th>
               <th className="px-6 py-4">Total</th>
@@ -102,15 +108,14 @@ const Orders = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.map((order, index) => (
+            {orders.map((order, index) => (
               <tr
-                key={order.id}
+                key={index}
                 className={`border-b ${
                   index % 2 === 0 ? "bg-white" : "bg-gray-50"
                 }`}
               >
-                <td className="px-6 py-4 font-medium">{order.id}</td>
-                <td className="px-6 py-4">{order.customer}</td>
+                <td className="px-6 py-4 font-medium">{order.orderId}</td>
                 <td className="px-6 py-4">{order.date}</td>
                 <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
                 <td className="px-6 py-4 font-semibold">{order.total}</td>
@@ -127,7 +132,7 @@ const Orders = () => {
                 </td>
               </tr>
             ))}
-            {filteredOrders.length === 0 && (
+            {orders.length === 0 && (
               <tr>
                 <td colSpan="6" className="text-center py-6 text-gray-500">
                   No orders found.
