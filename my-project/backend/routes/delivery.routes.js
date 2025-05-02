@@ -2,6 +2,7 @@ const express = require("express");
 const {
   createShipping,
   getAllShipping,
+  getOrderById,
   getShippingById,
   updateShippingById,
   deleteShippingById
@@ -14,6 +15,8 @@ router.post("/add", createShipping);
 
 // Get all shipping entries
 router.get("/", getAllShipping);
+
+router.get("/getByOrderId/:orderId",getOrderById);
 
 // Get a shipping entry by ID
 router.get("/:id", getShippingById);
