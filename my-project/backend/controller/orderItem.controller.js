@@ -40,12 +40,30 @@ exports.getAllOrderItems = (req, res) => {
 };
 
 // Get order items by orderId
+
 exports.getOrderItemsByOrderId = (req, res) => {
   try {
     const { orderId } = req.params;
 
-    // MySQL query to get order items by orderId
-    connection.query("SELECT * FROM order_items WHERE orderId = ?", [orderId], (err, results) => {
+    const query = `
+      SELECT 
+        oi.*, 
+        p.name AS productName, 
+        p.description, 
+        p.price AS productPrice, 
+        p.imageUrl, 
+        p.type, 
+        p.category, 
+        p.flavor 
+      FROM 
+        order_items oi
+      JOIN 
+        products p ON oi.productId = p.id
+      WHERE 
+        oi.orderId = ?
+    `;
+
+    connection.query(query, [orderId], (err, results) => {
       if (err) return res.status(500).json({ message: err.message });
 
       if (results.length === 0) {
@@ -58,6 +76,8 @@ exports.getOrderItemsByOrderId = (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
 
 // Update order item by ID
 exports.updateOrderItemById = (req, res) => {
