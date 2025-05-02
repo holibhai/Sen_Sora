@@ -11,6 +11,7 @@ const cartRoutes=require("./routes/cartItem.routes");
 const deliveryCostRoutes=require("./routes/deliveyCost.routes");
 const orderRoutes=require("./routes/order.routes");
 const orderItemRoutes=require("./routes/orderItem.routes");
+const deliveryRoutes=require("./routes/delivery.routes");
 const { createUsersTable } = require("./model/userModel");
 const { createAdminsTable } = require("./model/adminModel");
 const cors = require("cors");
@@ -24,6 +25,7 @@ const {
 const { createDeliveryCostTable } = require("./model/deliveryCostModel");
 const {createOrdersTable} = require("./model/orderModel");
 const { createOrderItemsTable } =require("./model/orderItemModel");
+const {createShippingTable} = require("./model/deliveryModel");
             
 
 dotenv.config();
@@ -51,6 +53,7 @@ app.use("/api/cart",cartRoutes);
 app.use("/api/deliveryCost",deliveryCostRoutes);
 app.use("/api/order",orderRoutes);
 app.use("/api/orderItem",orderItemRoutes);
+app.use("/api/delivery",deliveryRoutes);
 
 
 app.listen(PORT, () => {
@@ -63,5 +66,6 @@ app.listen(PORT, () => {
 	createDeliveryCostTable();
 	createOrdersTable();
 	createOrderItemsTable();
+	createShippingTable();
 	console.log(`Server Running on port ${PORT}`); 
 });
