@@ -8,7 +8,7 @@ const Billing = () => {
   const [cartItems, setCartItems] = useState([]);
   const [shippingCost, setShippingCost] = useState(0);
   const [selectedCity, setSelectedCity] = useState("");
-  const [orderId,setOrderId]=useState(null);
+  const [orderId, setOrderId] = useState(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -17,8 +17,8 @@ const Billing = () => {
     address1: "",
     address2: "",
     orderNotes: "",
-    userId: "",    // e.g., from context or props
-    orderId: ""    // e.g., from cart/checkout state
+    userId: "",
+    orderId: ""
   });
 
   const userId = localStorage.getItem("userId");
@@ -40,13 +40,25 @@ const Billing = () => {
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   const total = subtotal + Number(shippingCost || 0);
 
+  const validateFormData = () => {
+    const requiredFields = ['firstName', 'lastName', 'city', 'mobileNumber', 'address1'];
+    for (let field of requiredFields) {
+      if (!formData[field] || formData[field].trim() === '') {
+        alert(`Please fill in your ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}.`);
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleOrder = async (e) => {
     e.preventDefault();
-  
-    const userId = localStorage.getItem("userId");
+
+    if (!validateFormData()) return;
+
     const today = new Date();
     const newdate = today.toISOString().split('T')[0];
-  
+
     const orderData = {
       userId: userId,
       totalProducts: cartItems.length,
@@ -54,7 +66,7 @@ const Billing = () => {
       status: "pending",
       date: newdate
     };
-  
+
     try {
       // Step 1: Create the Order
       const orderResponse = await fetch('http://localhost:5000/api/order/add', {
@@ -62,14 +74,14 @@ const Billing = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData),
       });
-    
+
       if (!orderResponse.ok) throw new Error("Failed to create order");
-    
+
       const orderDataResponse = await orderResponse.json();
       const createdOrderId = orderDataResponse.orderId;
       setOrderId(createdOrderId);
       alert("Order successfully created!");
-    
+
       // Step 2: Create Order Items
       const orderItems = cartItems.map((item) => ({
         orderId: createdOrderId,
@@ -78,53 +90,52 @@ const Billing = () => {
         price: item.price,
         userId: userId,
       }));
-    
-      const itemCreationResults = await Promise.all(
+
+      await Promise.all(
         orderItems.map(async (item) => {
           const res = await fetch('http://localhost:5000/api/orderItem/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(item),
           });
-    
+
           if (!res.ok) {
             const errorText = await res.text();
             console.error("Failed to add order item:", errorText);
             throw new Error("One or more order items failed.");
           }
-    
+
           return res.json();
         })
       );
-    
+
       alert("All items added to the order!");
-    
+
       // Step 3: Submit Delivery Info
       const deliveryPayload = {
         ...formData,
         userId: userId,
         orderId: createdOrderId,
       };
-    
+
       const deliveryRes = await fetch('http://localhost:5000/api/delivery/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(deliveryPayload),
       });
-    
+
       if (!deliveryRes.ok) {
         const deliveryError = await deliveryRes.text();
         console.error("Delivery submission error:", deliveryError);
         throw new Error("Failed to submit delivery details");
       }
-    
+
       alert("Delivery details saved successfully!");
     } catch (error) {
       console.error("Order submission failed:", error);
       alert("There was an error placing the order. Please try again.");
     }
-  }
-    
+  };
 
   return (
     <div className='mt-48 mx-48'>
@@ -140,10 +151,10 @@ const Billing = () => {
 
         <div className='flex flex-col pl-20'>
           <Delivery
-               onShippingCostChange={setShippingCost}
-               onCityChange={setSelectedCity}
-               formData={formData}
-               setFormData={setFormData}
+            onShippingCostChange={setShippingCost}
+            onCityChange={setSelectedCity}
+            formData={formData}
+            setFormData={setFormData}
           />
         </div>
       </div>
