@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const Delivery = () => {
+const Delivery = ({ onShippingCostChange, onCityChange }) => {
   const [cities, setCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [shippingCost, setShippingCost] = useState(null);
@@ -21,7 +21,7 @@ const Delivery = () => {
     }
   };
 
-  const handleCheckShippingCost = () => {
+  const handleCheckShippingCost = (selectedCity) => {
     if (!selectedCity) {
       setError("Please select a city.");
       setShippingCost(null);
@@ -31,11 +31,19 @@ const Delivery = () => {
     const foundCity = cities.find((cityObj) => cityObj.city === selectedCity);
     if (foundCity) {
       setShippingCost(foundCity.cost);
+      onShippingCostChange(foundCity.cost);  // send cost to parent
+      onCityChange(selectedCity);            // send city to parent
       setError("");
     } else {
       setShippingCost(null);
       setError("Shipping cost not found for the selected city.");
     }
+  };
+
+  const handleCityChange = (e) => {
+    const selectedCity = e.target.value;
+    setSelectedCity(selectedCity);
+    handleCheckShippingCost(selectedCity); // Automatically update shipping cost
   };
 
   return (
@@ -73,7 +81,7 @@ const Delivery = () => {
               <select
                 id="city"
                 value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
+                onChange={handleCityChange} // Trigger city change and cost update
                 className="bg-transparent border border-gray-400 py-3 px-5"
               >
                 <option value="">-- Select City --</option>
@@ -132,7 +140,7 @@ const Delivery = () => {
             <label className="text-gray-500">Checking Shipping Cost</label>
             <button
               className="bg-gray-600 py-3 text-white font-semibold"
-              onClick={handleCheckShippingCost}
+              onClick={() => handleCheckShippingCost(selectedCity)} // Button for manually triggering the cost check
             >
               CHECK SHIPPING COST
             </button>
