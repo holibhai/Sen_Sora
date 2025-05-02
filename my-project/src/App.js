@@ -21,6 +21,8 @@ import AddCategory from "./admin/AddCategory";
 import AddProduct from "./admin/AddProduct";
 import UpdateProduct from "./admin/UpdateProduct";
 import DeliveryCost from "./admin/DeliveryCost";
+import OrderDetails from "./admin/OrderDetails";
+import OrderTrackUser from "./productPages/OrderTrackUser";
 
 const App = () => {
   const location = useLocation();
@@ -44,6 +46,8 @@ const App = () => {
         <Route path="/billing" element={<Billing />} />
         <Route path="/delivery" element={<Delivery />} />
         <Route path="/pickup" element={<PickUp />} />
+        <Route path="/trackuser" element={<OrderTrackUser />} />
+
 
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminHome />} />
@@ -53,6 +57,8 @@ const App = () => {
           <Route path="addProduct" element={<AddProduct />} />
           <Route path="updateProduct/:id" element={<UpdateProduct />} />
           <Route path="deliverycost" element={<DeliveryCost />} />
+          <Route path="orderdetails/:orderId" element={<OrderDetails />} />
+
 
 
 
