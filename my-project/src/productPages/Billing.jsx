@@ -8,6 +8,18 @@ const Billing = () => {
   const [cartItems, setCartItems] = useState([]);
   const [shippingCost, setShippingCost] = useState(0);
   const [selectedCity, setSelectedCity] = useState("");
+  const [orderId,setOrderId]=useState(null);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    city: "",
+    mobileNumber: "",
+    address1: "",
+    address2: "",
+    orderNotes: "",
+    userId: "",    // e.g., from context or props
+    orderId: ""    // e.g., from cart/checkout state
+  });
 
   const userId = localStorage.getItem("userId");
 
@@ -44,51 +56,75 @@ const Billing = () => {
     };
   
     try {
-      // Step 1: Create the order
-      const res = await fetch('http://localhost:5000/api/order/add', {
+      // Step 1: Create the Order
+      const orderResponse = await fetch('http://localhost:5000/api/order/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData),
       });
-      
-      if (!res.ok) throw new Error("Failed to create order");
-  
-      const data = await res.json(); // response includes orderId
+    
+      if (!orderResponse.ok) throw new Error("Failed to create order");
+    
+      const orderDataResponse = await orderResponse.json();
+      const createdOrderId = orderDataResponse.orderId;
+      setOrderId(createdOrderId);
       alert("Order successfully created!");
-  
-      // Step 2: Map cart items to orderItems with orderId
+    
+      // Step 2: Create Order Items
       const orderItems = cartItems.map((item) => ({
-        orderId: data.orderId,
+        orderId: createdOrderId,
         productId: item.productId,
         quantity: item.quantity,
         price: item.price,
-        userId: userId
+        userId: userId,
       }));
-        
-      // Step 3: Send all orderItems to the backend
-      await Promise.all(
+    
+      const itemCreationResults = await Promise.all(
         orderItems.map(async (item) => {
           const res = await fetch('http://localhost:5000/api/orderItem/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(item),
           });
-  
+    
           if (!res.ok) {
             const errorText = await res.text();
-            console.error("Error creating order item:", errorText);
+            console.error("Failed to add order item:", errorText);
+            throw new Error("One or more order items failed.");
           }
+    
+          return res.json();
         })
       );
-  
+    
       alert("All items added to the order!");
-  
+    
+      // Step 3: Submit Delivery Info
+      const deliveryPayload = {
+        ...formData,
+        userId: userId,
+        orderId: createdOrderId,
+      };
+    
+      const deliveryRes = await fetch('http://localhost:5000/api/delivery/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(deliveryPayload),
+      });
+    
+      if (!deliveryRes.ok) {
+        const deliveryError = await deliveryRes.text();
+        console.error("Delivery submission error:", deliveryError);
+        throw new Error("Failed to submit delivery details");
+      }
+    
+      alert("Delivery details saved successfully!");
     } catch (error) {
       console.error("Order submission failed:", error);
       alert("There was an error placing the order. Please try again.");
     }
-  };
-  
+  }
+    
 
   return (
     <div className='mt-48 mx-48'>
@@ -104,7 +140,10 @@ const Billing = () => {
 
         <div className='flex flex-col pl-20'>
           <Delivery
-              
+               onShippingCostChange={setShippingCost}
+               onCityChange={setSelectedCity}
+               formData={formData}
+               setFormData={setFormData}
           />
         </div>
       </div>

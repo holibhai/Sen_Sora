@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-const Delivery = ({ onShippingCostChange, onCityChange }) => {
+const Delivery = ({ onShippingCostChange, onCityChange, formData, setFormData }) => {
   const [cities, setCities] = useState([]);
-  const [selectedCity, setSelectedCity] = useState("");
   const [shippingCost, setShippingCost] = useState(null);
   const [error, setError] = useState("");
 
@@ -31,19 +30,33 @@ const Delivery = ({ onShippingCostChange, onCityChange }) => {
     const foundCity = cities.find((cityObj) => cityObj.city === selectedCity);
     if (foundCity) {
       setShippingCost(foundCity.cost);
-      onShippingCostChange(foundCity.cost);  // send cost to parent
-      onCityChange(selectedCity);            // send city to parent
+      onShippingCostChange(foundCity.cost);
+      onCityChange(selectedCity);
       setError("");
+
+      // Update formData with selected city
+      setFormData((prev) => ({
+        ...prev,
+        city: selectedCity,
+      }));
     } else {
       setShippingCost(null);
       setError("Shipping cost not found for the selected city.");
     }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const handleCityChange = (e) => {
     const selectedCity = e.target.value;
-    setSelectedCity(selectedCity);
-    handleCheckShippingCost(selectedCity); // Automatically update shipping cost
+    handleChange(e); // Update formData
+    handleCheckShippingCost(selectedCity); // Auto update cost + parent
   };
 
   return (
@@ -54,20 +67,22 @@ const Delivery = ({ onShippingCostChange, onCityChange }) => {
         <div className="flex flex-col gap-5">
           <div className="flex justify-between items-center">
             <div className="flex flex-col gap-2 w-full mr-2">
-              <label htmlFor="firstName" className="text-gray-500">
-                First Name
-              </label>
+              <label htmlFor="firstName" className="text-gray-500">First Name</label>
               <input
                 type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
                 className="bg-transparent border border-gray-400 py-3 px-5"
               />
             </div>
             <div className="flex flex-col gap-2 w-full ml-2">
-              <label htmlFor="lastName" className="text-gray-500">
-                Last Name
-              </label>
+              <label htmlFor="lastName" className="text-gray-500">Last Name</label>
               <input
                 type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
                 className="bg-transparent border border-gray-400 py-3 px-5"
               />
             </div>
@@ -75,13 +90,12 @@ const Delivery = ({ onShippingCostChange, onCityChange }) => {
 
           <div className="flex justify-between items-center">
             <div className="flex flex-col gap-2 w-full mr-2">
-              <label htmlFor="city" className="text-gray-500">
-                City
-              </label>
+              <label htmlFor="city" className="text-gray-500">City</label>
               <select
                 id="city"
-                value={selectedCity}
-                onChange={handleCityChange} // Trigger city change and cost update
+                name="city"
+                value={formData.city}
+                onChange={handleCityChange}
                 className="bg-transparent border border-gray-400 py-3 px-5"
               >
                 <option value="">-- Select City --</option>
@@ -94,43 +108,47 @@ const Delivery = ({ onShippingCostChange, onCityChange }) => {
             </div>
 
             <div className="flex flex-col gap-2 w-full ml-2">
-              <label htmlFor="phone" className="text-gray-500">
-                Recipient Phone
-              </label>
+              <label htmlFor="mobileNumber" className="text-gray-500">Recipient Phone</label>
               <input
                 type="tel"
+                name="mobileNumber"
+                value={formData.mobileNumber}
+                onChange={handleChange}
                 className="bg-transparent border border-gray-400 py-3 px-5"
               />
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="address" className="text-gray-500">
-              Street Address
-            </label>
+            <label htmlFor="address1" className="text-gray-500">Street Address</label>
             <input
               type="text"
+              name="address1"
+              value={formData.address1}
+              onChange={handleChange}
               placeholder="House number and street name"
               className="bg-transparent border border-gray-400 py-3 px-10"
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="address2" className="text-gray-500">
-              Street Address 2 (optional)
-            </label>
+            <label htmlFor="address2" className="text-gray-500">Street Address 2 (optional)</label>
             <input
               type="text"
+              name="address2"
+              value={formData.address2}
+              onChange={handleChange}
               placeholder="Apartment, suite, unit etc..."
               className="bg-transparent border border-gray-400 py-3 px-10"
             />
           </div>
 
           <div className="flex flex-col gap-3">
-            <label htmlFor="notes" className="text-gray-500">
-              Order Notes (Optional)
-            </label>
+            <label htmlFor="orderNotes" className="text-gray-500">Order Notes (Optional)</label>
             <textarea
+              name="orderNotes"
+              value={formData.orderNotes}
+              onChange={handleChange}
               className="bg-transparent border border-gray-400 p-3"
               placeholder="Notes about your order..."
             ></textarea>
@@ -139,8 +157,9 @@ const Delivery = ({ onShippingCostChange, onCityChange }) => {
           <div className="flex flex-col gap-3">
             <label className="text-gray-500">Checking Shipping Cost</label>
             <button
+              type="button"
               className="bg-gray-600 py-3 text-white font-semibold"
-              onClick={() => handleCheckShippingCost(selectedCity)} // Button for manually triggering the cost check
+              onClick={() => handleCheckShippingCost(formData.city)}
             >
               CHECK SHIPPING COST
             </button>
