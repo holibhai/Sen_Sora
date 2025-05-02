@@ -104,8 +104,7 @@ const Billing = () => {
 
         <div className='flex flex-col pl-20'>
           <Delivery
-            onShippingCostChange={(cost) => setShippingCost(cost)}
-            onCityChange={(city) => setSelectedCity(city)}
+              
           />
         </div>
       </div>

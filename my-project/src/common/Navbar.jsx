@@ -127,7 +127,9 @@ const Navbar = () => {
                 <div className="flex items-center space-x-5">
                   <FaHeart className="text-gray-700 text-xl cursor-pointer hover:text-red-500" />
                   <FaUser className="text-gray-700 text-xl cursor-pointer hover:text-blue-500" />
+                  <Link to="/checkout">
                   <FaShoppingCart className="text-gray-700 text-xl cursor-pointer hover:text-green-500" />
+                  </Link>
                 </div>
               </div>
             </nav>
