@@ -56,6 +56,25 @@ exports.getAllShipping = async (req, res) => {
   }
 };
 
+exports.getOrderById = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const query = "SELECT * FROM shipping WHERE orderId = ?";
+    connection.query(query, [orderId], (err, results) => {
+      if (err) return res.status(500).json({ message: err.message });
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: "Shipping details not found for the given orderId" });
+      }
+
+      res.json(results[0]); // Return first match, assuming one-to-one
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Get a single shipping record by ID
 exports.getShippingById = async (req, res) => {
   try {
