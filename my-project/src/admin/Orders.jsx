@@ -8,13 +8,14 @@ import {
   XCircle,
   Search,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const getStatusBadge = (status) => {
   switch (status) {
-    case "Completed":
+    case "Processing":
       return (
         <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs flex items-center gap-1">
-          <CheckCircle size={14} /> Completed
+          <CheckCircle size={14} /> Processing
         </span>
       );
     case "pending":
@@ -23,7 +24,13 @@ const getStatusBadge = (status) => {
           <Clock size={14} /> Pending
         </span>
       );
-    case "Cancelled":
+    case "Shipped":
+      return (
+        <span className="bg-red-100 text-green-600 px-2 py-0.5 rounded text-xs flex items-center gap-1">
+          <XCircle size={14} /> Shipped
+        </span>
+      );
+      case "Delivered":
       return (
         <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded text-xs flex items-center gap-1">
           <XCircle size={14} /> Cancelled
@@ -58,7 +65,7 @@ const Orders = () => {
     };
 
     fetchOrders();
-  }, []);
+  }, [orders]);
 
   /*const filteredOrders = orders.filter((order) =>
     order.customer.toLowerCase().includes(searchTerm.toLowerCase())
@@ -79,7 +86,25 @@ const Orders = () => {
       </div>
     );
   }
-
+  const handleDelete = async (orderId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/order/${orderId}`, {
+        method: 'DELETE',
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to delete the order');
+      }
+  
+      alert('Order deleted successfully');
+      // Optionally, redirect or update state:
+      // navigate('/orders'); or refresh data
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Error deleting order: ' + error.message);
+    }
+  };
+  
   return (
     <div className="p-6 w-full min-h-screen bg-gray-50">
       <div className="flex justify-between items-center mb-6">
@@ -120,13 +145,16 @@ const Orders = () => {
                 <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
                 <td className="px-6 py-4 font-semibold">{order.total}</td>
                 <td className="px-6 py-4 text-center space-x-3">
-                  <button className="text-blue-600 hover:text-blue-800 transition">
-                    <Eye size={18} />
-                  </button>
+                  <Link to={`/admin/orderdetails/${order.orderId}`}>
+                    <button className="text-blue-600 hover:text-blue-800 transition">
+                      <Eye size={18} />
+                    </button>
+                  </Link>
+
                   <button className="text-yellow-500 hover:text-yellow-600 transition">
                     <Pencil size={18} />
                   </button>
-                  <button className="text-red-500 hover:text-red-700 transition">
+                  <button className="text-red-500 hover:text-red-700 transition" onClick={()=>handleDelete(order.orderId)}>
                     <Trash2 size={18} />
                   </button>
                 </td>
