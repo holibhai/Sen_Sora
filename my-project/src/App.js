@@ -55,7 +55,7 @@ const App = () => {
           path="/productDetail/:id"
           element={<ProductDetail count={count} setCount={setCount} />}
         />
-        <Route path="/checkout" element={<CheckOut />} />
+        <Route path="/checkout" element={<CheckOut count={count} setCount={setCount} />} />
         <Route path="/billing" element={<Billing />} />
         <Route path="/delivery" element={<Delivery />} />
         <Route path="/pickup" element={<PickUp />} />

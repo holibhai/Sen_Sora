@@ -178,20 +178,24 @@ exports.decrementQuantity = (req, res) => {
 };
 
 // Remove item from cart
-exports.removeFromCart = async (req, res) => {
-  try {
-    const cartItemId = req.params.id;
-    const userId = req.user._id;
+// Assuming `db` is a mysql2/promise connection
+exports.removeFromCart = (req, res) => {
+  const cartItemId = req.params.id;
 
-    const cartItem = await CartItem.findOneAndDelete({ _id: cartItemId, userId });
-    if (!cartItem) {
+  const query = 'DELETE FROM cart_items WHERE id = ?';
+
+  connection.query(query, [cartItemId], (err, result) => {
+    if (err) {
+      console.error('Error removing item from cart:', err);
+      return res.status(500).json({ message: 'Server error' });
+    }
+
+    if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Cart item not found' });
     }
 
-    res.status(200).json({ message: 'Item removed from cart' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    res.status(200).json({ message: 'Item removed from cart successfully' });
+  });
 };
 
 // Clear user's cart
