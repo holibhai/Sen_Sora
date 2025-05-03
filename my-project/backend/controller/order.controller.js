@@ -58,6 +58,25 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
+exports.getOrdersByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    connection.query(
+      'SELECT * FROM orders WHERE userId = ? ORDER BY date DESC',
+      [userId],
+      (err, results) => {
+        if (err) return res.status(500).json({ message: err.message });
+        if (results.length === 0) return res.status(404).json({ message: "No orders found for this user" });
+        res.json(results);
+      }
+    );
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 exports.updateOrderStatusById = async (req, res) => {
   try {
     const { orderId } = req.params;
