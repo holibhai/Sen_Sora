@@ -33,7 +33,6 @@ const Products = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
-
     try {
       const response = await fetch(`http://localhost:5000/api/products/${id}`, {
         method: "DELETE",
