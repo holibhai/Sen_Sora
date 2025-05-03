@@ -4,10 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaSearch, FaHeart, FaUser, FaShoppingCart } from "react-icons/fa";
 import Logo from "../assets/__-removebg-preview.png";
 
-const Navbar = () => {
+const Navbar = ({count,setCount}) => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState(null);
+  const [pdata,setPData]=useState([]);
   const [categories, setCategories] = useState([
     {
       name: "cake",
@@ -73,6 +74,24 @@ const Navbar = () => {
       navigate("/products",{state:{sub}});
       setHoveredCategory(null);
   }
+
+   useEffect(() => {
+     const fetchCartItems = async () => {
+       try {
+         const userId = localStorage.getItem("userId");
+         const response = await fetch(`http://localhost:5000/api/cart/${userId}`);
+         if (!response.ok) {
+           throw new Error("Failed to fetch cart items.");
+         }
+         const data = await response.json();
+         setPData(data);
+       } catch (err) {
+         alert("Error fetching cart items.");
+       }
+     };
+ 
+     fetchCartItems();
+   }, [count]);
 
   return (
     <>
@@ -166,9 +185,15 @@ const Navbar = () => {
                   <Link to="/trackuser">
                     <FaUser className="text-gray-700 text-xl cursor-pointer hover:text-blue-500" />
                   </Link>
-                  <Link to="/checkout">
-                    <FaShoppingCart className="text-gray-700 text-xl cursor-pointer hover:text-green-500" />
-                  </Link>
+                  <Link to="/checkout" className="relative inline-block">
+      <FaShoppingCart className="text-gray-700 text-2xl cursor-pointer hover:text-green-500" />
+      
+      {10 > 0 && (
+        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold w-5 h-5 flex items-center justify-center rounded-full shadow-md">
+           {pdata.length}
+        </span>
+      )}
+    </Link>
                 </div>
               </div>
             </nav>
