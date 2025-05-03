@@ -22,7 +22,8 @@ import AddProduct from "./admin/AddProduct";
 import UpdateProduct from "./admin/UpdateProduct";
 import DeliveryCost from "./admin/DeliveryCost";
 import OrderDetails from "./admin/OrderDetails";
-// import OrderTrackUser from "./productPages/OrderTrackUser";
+import OrderTrackUser from "./productPages/OrderTrackUser";
+import OrderDetailUser from "./productPages/OrderDetailUser";
 
 const App = () => {
   const location = useLocation();
@@ -46,7 +47,9 @@ const App = () => {
         <Route path="/billing" element={<Billing />} />
         <Route path="/delivery" element={<Delivery />} />
         <Route path="/pickup" element={<PickUp />} />
-        {/* <Route path="/trackuser" element={<OrderTrackUser />} /> */}
+        <Route path="/trackuser" element={<OrderTrackUser />} />
+        <Route path="/orderdetailUser/:orderId" element={<OrderDetailUser />} />
+
 
 
         <Route path="/admin" element={<AdminLayout />}>
