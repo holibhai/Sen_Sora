@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Cake,
   Gift,
@@ -9,48 +9,81 @@ import {
 } from "lucide-react";
 
 const AdminHome = () => {
-  // Sample data                           
+  const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
+
+  const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+
+  // Sample customer count (replace with actual count logic if needed)
+  const customerCount = 98;
+
+  // Stats configuration
   const stats = [
     {
       title: "Total Products",
-      value: "132",
+      value: products.length,
       icon: <PackageCheck size={24} className="text-purple-600" />,
     },
     {
       title: "Total Orders",
-      value: "248",
+      value: orders.length,
       icon: <ShoppingCart size={24} className="text-green-600" />,
     },
     {
       title: "Revenue",
-      value: "$12,430",
+      value: `₹${totalRevenue}`,
       icon: <DollarSign size={24} className="text-yellow-500" />,
     },
     {
       title: "Customers",
-      value: "98",
+      value: customerCount,
       icon: <Users size={24} className="text-blue-500" />,
     },
   ];
 
-  const latestOrders = [
-    { id: "ORD001", customer: "Alice", status: "Pending", total: "$45" },
-    { id: "ORD002", customer: "Bob", status: "Completed", total: "$120" },
-    { id: "ORD003", customer: "Charlie", status: "Cancelled", total: "$32" },
-  ];
+  // Fetch products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products");
+        if (!res.ok) throw new Error("Failed to fetch products");
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
 
-  const recentProducts = [
-    { name: "Chocolate Cake", category: "Cake" },
-    { name: "Anniversary Gift Box", category: "Gift" },
-    { name: "Vanilla Cupcake", category: "Cake" },
-  ];
+    fetchProducts();
+  }, []);
+
+  // Fetch orders
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/order/");
+        if (!res.ok) throw new Error("Failed to fetch orders");
+        const data = await res.json();
+        setOrders(data);
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  // Show last 5 orders (sorted by date if needed)
+  const latestOrders = orders.slice(-5).reverse();
+
+  // Placeholder recent products — can be replaced with logic to get recent ones
+  const recentProducts = products.slice(-3).reverse();
 
   return (
     <div className="p-6 md:p-10 bg-gray-100 min-h-screen">
-      {/* Welcome Section */}
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Welcome, Admin 🎉</h1>
 
-      {/* Stats Cards */}
+      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {stats.map((stat, idx) => (
           <div
@@ -66,7 +99,7 @@ const AdminHome = () => {
         ))}
       </div>
 
-      {/* Two Column Section */}
+      {/* Latest Orders & Recent Products */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Latest Orders */}
         <div className="bg-white rounded-xl shadow-md p-6">
@@ -83,19 +116,22 @@ const AdminHome = () => {
               </tr>
             </thead>
             <tbody>
-              {latestOrders.map((order) => (
-                <tr key={order.id} className="border-b hover:bg-gray-50">
-                  <td className="py-2">{order.id}</td>
-                  <td className="py-2">{order.customer}</td>
-                  <td className={`py-2 font-medium ${order.status === "Completed"
-                    ? "text-green-600"
-                    : order.status === "Pending"
-                    ? "text-yellow-600"
-                    : "text-red-500"
-                  }`}>
-                    {order.status}
+              {latestOrders.map((order, index) => (
+                <tr key={index} className="border-b hover:bg-gray-50">
+                  <td className="py-2">{order._id || `ORD-${index + 1}`}</td>
+                  <td className="py-2">{order.customerName || "N/A"}</td>
+                  <td
+                    className={`py-2 font-medium ${
+                      order.status === "Completed"
+                        ? "text-green-600"
+                        : order.status === "Pending"
+                        ? "text-yellow-600"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {order.status || "Pending"}
                   </td>
-                  <td className="py-2">{order.total}</td>
+                  <td className="py-2">₹{order.total}</td>
                 </tr>
               ))}
             </tbody>

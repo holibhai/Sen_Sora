@@ -44,6 +44,10 @@ const ProductDetail = ({count,setCount}) => {
 
 
   const handleAddToCart = async (productId,quantity, price) => {
+    if(product.quantity>=quantity){
+
+    
+
     const userId = localStorage.getItem("userId");
     setCount((count)=>count+1);
     console.log(count);
@@ -84,6 +88,9 @@ const ProductDetail = ({count,setCount}) => {
       console.error("Error adding to cart:", error);
       alert("An error occurred while adding item to cart.");
     }
+  }else{
+    alert("In Sufficient Product Count")
+  }
   };
   
 

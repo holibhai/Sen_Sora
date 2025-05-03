@@ -41,7 +41,8 @@ exports.addToCart = (req, res) => {
           SET quantity = ?, price = ?
           WHERE id = ?;
         `;
-
+        
+        
         connection.query(updateQuery, [newQuantity, price, existingItemId], (updateErr) => {
           if (updateErr) {
             console.error("Error updating cart item:", updateErr);
