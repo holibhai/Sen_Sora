@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Register from "./auth/Register";
 import Login from "./auth/Login";
@@ -27,13 +27,14 @@ import OrderDetailUser from "./productPages/OrderDetailUser";
 
 const App = () => {
   const location = useLocation();
+  const [count,setCount]=useState(0)
 
   // Check if the current path starts with "/admin"
   const isAdminRoute = location.pathname.startsWith("/admin");
 
   return (
     <div className="bg-gradient-to-tr from-indigo-500/30 to-pink-500/30 min-h-screen">
-      {!isAdminRoute && <Navbar />}
+      {!isAdminRoute && <Navbar count={count} setcount={setCount} />}
 
       <Routes>
         <Route path="/" element={<Home />} />
@@ -42,7 +43,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/products" element={<ProductListed />} />
-        <Route path="/productDetail/:id" element={<ProductDetail />} />
+        <Route path="/productDetail/:id" element={<ProductDetail count={count} setCount={setCount} />} />
         <Route path="/checkout" element={<CheckOut />} />
         <Route path="/billing" element={<Billing />} />
         <Route path="/delivery" element={<Delivery />} />
