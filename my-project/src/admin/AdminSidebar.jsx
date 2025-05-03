@@ -10,6 +10,7 @@ import {
   X,
   ChevronDown,
   ChevronUp,
+  Truck, // ✅ New icon for Delivery Cost
 } from "lucide-react";
 
 const AdminSidebar = () => {
@@ -20,8 +21,8 @@ const AdminSidebar = () => {
   const toggleProductDropdown = () => setProductDropdownOpen(!productDropdownOpen);
 
   const navLinks = [
-    // { to: "/admin", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
     { to: "/admin/orders", label: "Orders", icon: <ListOrdered size={18} /> },
+    { to: "/admin/deliverycost", label: "Delivery Cost", icon: <Truck size={18} /> }, // ✅ New link
     { to: "/admin/profile", label: "Profile", icon: <UserCircle size={18} /> },
     { to: "/logout", label: "Logout", icon: <LogOut size={18} /> },
   ];
@@ -75,7 +76,7 @@ const AdminSidebar = () => {
               to="/admin/products"
               className={({ isActive }) =>
                 `block px-2 py-1 rounded-md text-sm ${
-                  isActive ? "bg-yellow-500 text-black" : "hover:bg-gray-700"
+                  isActive ? "bg-red-500 text-white" : "hover:bg-gray-700"
                 }`
               }
             >
@@ -85,7 +86,7 @@ const AdminSidebar = () => {
               to="/admin/category"
               className={({ isActive }) =>
                 `block px-2 py-1 rounded-md text-sm ${
-                  isActive ? "bg-yellow-500 text-black" : "hover:bg-gray-700"
+                  isActive ? "bg-red-500 text-white" : "hover:bg-gray-700"
                 }`
               }
             >
@@ -101,7 +102,7 @@ const AdminSidebar = () => {
             to={link.to}
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                isActive ? "bg-yellow-500 text-black" : "hover:bg-gray-700"
+                isActive ? "bg-red-500 text-white" : "hover:bg-gray-700"
               }`
             }
           >

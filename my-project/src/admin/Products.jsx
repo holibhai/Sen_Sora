@@ -40,18 +40,18 @@ const Products = () => {
 
       if (!response.ok) {
         throw new Error("Failed to delete product");
-      }
+      }  
 
       setProducts(products.filter((product) => product.id !== id));
-    } catch (err) {
+    } catch (err) {  
       setError(err.message);
     }
   };
 
   const filteredProducts = products.filter(
     (product) =>
-      product.name.toLowerCase().includes(search.toLowerCase()) &&
-      (categoryFilter ? product.category === categoryFilter : true)
+      product.type.toLowerCase().includes(search.toLowerCase()) &&
+      (categoryFilter ? product.type === categoryFilter : true)
   );
 
   const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
@@ -105,8 +105,8 @@ const Products = () => {
             onChange={(e) => setCategoryFilter(e.target.value)}
           >
             <option value="">All Categories</option>
-            <option value="Cake">Cakes</option>
-            <option value="Gift">Gifts</option>
+            <option value="cake">Cakes</option>
+            <option value="gift">Gifts</option>
           </select>
         </div>
 
