@@ -124,7 +124,7 @@ const DeliveryCost = () => {
           </div>
           <div>
             <label className="flex items-center font-medium text-gray-700 mb-1">
-              <DollarSign className="mr-2" size={18} /> Cost (₹)
+              <DollarSign className="mr-2" size={18} /> Cost (Rs)
             </label>
             <input
               type="number"
@@ -173,7 +173,7 @@ const DeliveryCost = () => {
             <thead className="bg-gray-100 text-gray-700">
               <tr>
                 <th className="text-left p-3 border">City</th>
-                <th className="text-left p-3 border">Cost (₹)</th>
+                <th className="text-left p-3 border">Cost (Rs.)</th>
                 <th className="text-left p-3 border">Actions</th>
               </tr>
             </thead>
@@ -182,7 +182,7 @@ const DeliveryCost = () => {
                 deliveryCosts.map((item) => (
                   <tr key={item.city} className="hover:bg-gray-50">
                     <td className="p-3 border">{item.city}</td>
-                    <td className="p-3 border">₹ {item.cost}</td>
+                    <td className="p-3 border">Rs. {item.cost}</td>
                     <td className="p-3 border space-x-2">
                       <button
                         onClick={() => handleEdit(item.city, item.cost)}
