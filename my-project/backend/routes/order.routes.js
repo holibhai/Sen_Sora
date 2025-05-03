@@ -3,6 +3,7 @@ const {
   createOrder,
   getAllOrders,
   getOrderById,
+  getOrdersByUserId,
   updateOrderStatusById,
   updateOrderById,
   deleteOrderById
@@ -13,6 +14,11 @@ const router = express.Router();
 router.post("/add", createOrder);
 router.get("/", getAllOrders);
 router.get("/:id", getOrderById);
+  router.get("/getByUserId/:userId",
+  getOrdersByUserId,
+
+  );
+
 router.put("/updateStatus/:orderId",updateOrderStatusById)
 router.put("/update/:id", updateOrderById);
 router.delete("/:id", deleteOrderById);
