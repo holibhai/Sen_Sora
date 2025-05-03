@@ -1,6 +1,5 @@
 const { connection } = require("../db/ConnectMysql");
 
-
 const createCartItemsTable = () => {
   const query = `
     CREATE TABLE IF NOT EXISTS cart_items (
@@ -10,8 +9,8 @@ const createCartItemsTable = () => {
       quantity INT NOT NULL DEFAULT 1,
       addedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-      FOREIGN KEY (userId) REFERENCES users(userId),
-      FOREIGN KEY (productId) REFERENCES products(id)
+      FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE,
+      FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE
     );
   `;
 
@@ -24,9 +23,6 @@ const createCartItemsTable = () => {
   });
 };
 
-
 module.exports = {
   createCartItemsTable
 };
-
-
