@@ -3,7 +3,7 @@ import { Heart, Minus, Plus } from "lucide-react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import image from "../assets/cake10.jpg"; // fallback/related image
 
-const ProductDetail = () => {
+const ProductDetail = ({count,setCount}) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
@@ -45,11 +45,10 @@ const ProductDetail = () => {
 
   const handleAddToCart = async (productId,quantity, price) => {
     const userId = localStorage.getItem("userId");
-    console.log(productId);
-    console.log(quantity);
-    console.log(price);
-    console.log(userId)
-
+    setCount((count)=>count+1);
+    console.log(count);
+   
+ 
   
     if (!userId) {
       alert("User not logged in.");
