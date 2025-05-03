@@ -22,8 +22,6 @@ const createOrderItemsTable = `
       console.log('✅ order_items table created or already exists.');
     }
   });
-};
-
 module.exports = {
   createOrderItemsTable,
 };
