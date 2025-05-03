@@ -1,6 +1,6 @@
 const { connection } = require("../db/ConnectMysql");
 
-// Create Order Items table
+
 const createOrderItemsTable = `
   CREATE TABLE IF NOT EXISTS order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
