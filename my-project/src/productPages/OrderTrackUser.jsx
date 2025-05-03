@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { CheckCircle, Clock, XCircle, Search } from "lucide-react";
+import { CheckCircle, Clock, XCircle, Search, Eye, Truck, PackageSearch, PackageCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const getStatusBadge = (status) => {
   switch (status) {
@@ -9,7 +10,7 @@ const getStatusBadge = (status) => {
           <CheckCircle size={14} /> Processing
         </span>
       );
-    case "Pending":
+    case "pending":
       return (
         <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-xs flex items-center gap-1">
           <Clock size={14} /> Pending
@@ -47,6 +48,7 @@ const OrderTrackUser = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -70,6 +72,8 @@ const OrderTrackUser = () => {
     order.orderId.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const statusCount = (status) => orders.filter((order) => order.status === status).length;
+
   if (loading) {
     return (
       <div className="p-6 min-h-screen flex items-center justify-center text-xl">
@@ -87,7 +91,7 @@ const OrderTrackUser = () => {
   }
 
   return (
-    <div className="p-6 w-full min-h-screen  pt-44 px-44">
+    <div className="p-6 w-full min-h-screen pt-44 px-44">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Your Orders</h1>
         <div className="relative">
@@ -102,7 +106,33 @@ const OrderTrackUser = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto  shadow-md rounded-lg">
+      {/* Order Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-white shadow-md rounded-lg p-4 flex items-center gap-4">
+          <PackageSearch className="text-yellow-500" size={32} />
+          <div>
+            <p className="text-gray-500 text-sm">Total Orders</p>
+            <h2 className="text-xl font-bold">{orders.length}</h2>
+          </div>
+        </div>
+        <div className="bg-white shadow-md rounded-lg p-4 flex items-center gap-4">
+          <Truck className="text-blue-500" size={32} />
+          <div>
+            <p className="text-gray-500 text-sm">Shipped</p>
+            <h2 className="text-xl font-bold">{statusCount("Shipped")}</h2>
+          </div>
+        </div>
+        <div className="bg-white shadow-md rounded-lg p-4 flex items-center gap-4">
+          <PackageCheck className="text-purple-600" size={32} />
+          <div>
+            <p className="text-gray-500 text-sm">Delivered</p>
+            <h2 className="text-xl font-bold">{statusCount("Delivered")}</h2>
+          </div>
+        </div>
+      </div>
+
+      {/* Orders Table */}
+      <div className="overflow-x-auto shadow-md rounded-lg">
         <table className="min-w-full table-auto text-sm text-left">
           <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
             <tr>
@@ -110,6 +140,7 @@ const OrderTrackUser = () => {
               <th className="px-6 py-4">Date</th>
               <th className="px-6 py-4">Status</th>
               <th className="px-6 py-4">Total</th>
+              <th className="px-6 py-4 text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -122,11 +153,19 @@ const OrderTrackUser = () => {
                 <td className="px-6 py-4">{order.date}</td>
                 <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
                 <td className="px-6 py-4 font-semibold">Rs.{order.total}</td>
+                <td className="px-6 py-4 text-center">
+                  <button
+                    onClick={() => navigate(`/orderdetailUser/${order.orderId}`)}
+                    className="flex items-center gap-1 text-sm text-black px-3 py-1 rounded hover:underline"
+                  >
+                    <Eye size={16} /> View
+                  </button>
+                </td>
               </tr>
             ))}
             {filteredOrders.length === 0 && (
               <tr>
-                <td colSpan="4" className="text-center py-6 text-gray-500">
+                <td colSpan="5" className="text-center py-6 text-gray-500">
                   No orders found.
                 </td>
               </tr>
