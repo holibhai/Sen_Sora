@@ -8,8 +8,14 @@ import { List } from 'lucide-react';
 import { useState } from 'react'
 import ListProduct from "./ListProduct";
 import GridProduct from "./GridProduct";
+import { useLocation } from 'react-router-dom';
 
 const ProductListed = () => {
+  const location = useLocation();
+  const category = location.state?.category;
+  const sub=location.state?.sub;
+  console.log(sub)
+  console.log(category);
 
   const [displayType,setDisplayedType]=useState(true);
 
@@ -54,7 +60,7 @@ const ProductListed = () => {
             </div>
              {displayType? <div>
                   <div className="">
-                      <GridProduct/>
+                      <GridProduct category={category} sub={sub}/>
                   </div>
                 </div>:
                 <div>

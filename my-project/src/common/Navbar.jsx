@@ -4,17 +4,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaSearch, FaHeart, FaUser, FaShoppingCart } from "react-icons/fa";
 import Logo from "../assets/__-removebg-preview.png";
 
-const Navbar = () => {
+const Navbar = ({count,setCount}) => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState(null);
+  const [pdata,setPData]=useState([]);
   const [categories, setCategories] = useState([
     {
-      name: "Cakes",
+      name: "cake",
       subcategories: [],
     },
     {
-      name: "Gifts",
+      name: "gift",
       subcategories: [],
     },
   ]);
@@ -35,16 +36,20 @@ const Navbar = () => {
         });
         const data = await res.json();
 
-        const cakeSubs = data.filter(cat => cat.type?.toLowerCase() === "cake").map(cat => cat.category);
-        const giftSubs = data.filter(cat => cat.type?.toLowerCase() === "gift").map(cat => cat.category);
+        const cakeSubs = data
+          .filter((cat) => cat.type?.toLowerCase() === "cake")
+          .map((cat) => cat.category);
+        const giftSubs = data
+          .filter((cat) => cat.type?.toLowerCase() === "gift")
+          .map((cat) => cat.category);
 
         setCategories([
           {
-            name: "Cakes",
+            name: "cake",
             subcategories: cakeSubs,
           },
           {
-            name: "Gifts",
+            name: "gift",
             subcategories: giftSubs,
           },
         ]);
@@ -54,7 +59,39 @@ const Navbar = () => {
     };
 
     fetchData();
+    
   }, []);
+
+  const handleClick=(category)=>{
+    console.log(category)
+    navigate("/products", { state: { category } });
+    setHoveredCategory(null);
+       
+  }
+
+  const handleSubCategory=(sub)=>{
+      console.log(sub);
+      navigate("/products",{state:{sub}});
+      setHoveredCategory(null);
+  }
+
+   useEffect(() => {
+     const fetchCartItems = async () => {
+       try {
+         const userId = localStorage.getItem("userId");
+         const response = await fetch(`http://localhost:5000/api/cart/${userId}`);
+         if (!response.ok) {
+           throw new Error("Failed to fetch cart items.");
+         }
+         const data = await response.json();
+         setPData(data);
+       } catch (err) {
+         alert("Error fetching cart items.");
+       }
+     };
+ 
+     fetchCartItems();
+   }, [count]);
 
   return (
     <>
@@ -68,8 +105,15 @@ const Navbar = () => {
               </h1>
             </div>
 
-            <button className="md:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <HiX className="h-6 w-6" /> : <HiMenu className="h-6 w-6" />}
+            <button
+              className="md:hidden p-2"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? (
+                <HiX className="h-6 w-6" />
+              ) : (
+                <HiMenu className="h-6 w-6" />
+              )}
             </button>
 
             <button className="hidden md:block bg-pink-600 text-white px-6 py-2.5 rounded-lg hover:bg-pink-700 text-sm font-medium transition-all hover:shadow-lg">
@@ -87,29 +131,41 @@ const Navbar = () => {
                       <div
                         key={index}
                         className="relative group"
-                        onClick={handleRoute}
+                        // onClick={handleRoute}
                         onMouseEnter={() => {
                           clearTimeout(closeTimeout);
                           setHoveredCategory(index);
                         }}
                         onMouseLeave={() => {
-                          closeTimeout = setTimeout(() => setHoveredCategory(null), 300);
+                          closeTimeout = setTimeout(
+                            () => setHoveredCategory(null),
+                            300
+                          );
                         }}
                       >
-                        <button className="px-4 py-2 text-neutral-700 font-semibold rounded-lg hover:text-indigo-500">
-                          {category.name}
-                        </button>
+                        
+                          <button className="px-4 py-2 text-neutral-700 font-semibold rounded-lg hover:text-indigo-500"
+                             onClick={()=>handleClick(category.name)}>
+                            {category.name}
+                          </button>
+                       
                       </div>
                     ))}
                   </div>
                   <div className="px-4 py-2 text-neutral-700 font-semibold rounded-lg hover:text-indigo-500 cursor-pointer">
-                    <h1><Link to="/">Home</Link></h1>
+                    <h1>
+                      <Link to="/">Home</Link>
+                    </h1>
                   </div>
                   <div className="px-4 py-2 text-neutral-700 font-semibold rounded-lg hover:text-indigo-500 cursor-pointer">
-                    <h1><Link to="/contact">Contact</Link></h1>
+                    <h1>
+                      <Link to="/contact">Contact</Link>
+                    </h1>
                   </div>
                   <div className="px-4 py-2 text-neutral-700 font-semibold rounded-lg hover:text-indigo-500 cursor-pointer">
-                    <h1><Link to="/about">About</Link></h1>
+                    <h1>
+                      <Link to="/about">About</Link>
+                    </h1>
                   </div>
                 </div>
 
@@ -126,8 +182,18 @@ const Navbar = () => {
                 {/* Icons */}
                 <div className="flex items-center space-x-5">
                   <FaHeart className="text-gray-700 text-xl cursor-pointer hover:text-red-500" />
-                  <FaUser className="text-gray-700 text-xl cursor-pointer hover:text-blue-500" />
-                  <FaShoppingCart className="text-gray-700 text-xl cursor-pointer hover:text-green-500" />
+                  <Link to="/trackuser">
+                    <FaUser className="text-gray-700 text-xl cursor-pointer hover:text-blue-500" />
+                  </Link>
+                  <Link to="/checkout" className="relative inline-block">
+      <FaShoppingCart className="text-gray-700 text-2xl cursor-pointer hover:text-green-500" />
+      
+      {10 > 0 && (
+        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold w-5 h-5 flex items-center justify-center rounded-full shadow-md">
+           {pdata.length}
+        </span>
+      )}
+    </Link>
                 </div>
               </div>
             </nav>
@@ -141,17 +207,29 @@ const Navbar = () => {
                   setHoveredCategory(hoveredCategory);
                 }}
                 onMouseLeave={() => {
-                  closeTimeout = setTimeout(() => setHoveredCategory(null), 300);
+                  closeTimeout = setTimeout(
+                    () => setHoveredCategory(null),
+                    300
+                  );
                 }}
               >
-                <div className="mx-auto w-full rounded-2xl bg-cover" style={{ backgroundImage: "url('Delicious.jpg')" }}>
+                <div
+                  className="mx-auto w-full rounded-2xl bg-cover"
+                  style={{ backgroundImage: "url('Delicious.jpg')" }}
+                >
                   <div className="w-1/2">
                     <ul className="text-gray-700 space-y-2">
-                      {categories[hoveredCategory]?.subcategories.map((sub, i) => (
-                        <li key={i} className="px-4 py-2 text-white cursor-pointer">
-                          {sub}
-                        </li>
-                      ))}
+                      {categories[hoveredCategory]?.subcategories.map(
+                        (sub, i) => (
+                          <li
+                            key={i}
+                            className="px-4 py-2 text-white cursor-pointer"
+                            onClick={()=>handleSubCategory(sub)}
+                          >
+                            {sub}
+                          </li>
+                        )
+                      )}
                     </ul>
                   </div>
                 </div>

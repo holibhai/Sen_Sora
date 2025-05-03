@@ -1,6 +1,6 @@
 const { connection } = require("../db/ConnectMysql");
 
-
+// Create Order Items table
 const createOrderItemsTable = `
   CREATE TABLE IF NOT EXISTS order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -15,14 +15,14 @@ const createOrderItemsTable = `
   );
 `;
 
-connection.query(createOrderItemsTable, (err, result) => {
-  if (err) {
-    console.error('Failed to create order_items table:', err);
-  } else {
-    console.log('Order_items table created or already exists.');
-  }
-
-});
+  connection.query(createTableQuery, (err, result) => {
+    if (err) {
+      console.error('Failed to create order_items table:', err);
+    } else {
+      console.log('✅ order_items table created or already exists.');
+    }
+  });
+};
 
 module.exports = {
   createOrderItemsTable,
