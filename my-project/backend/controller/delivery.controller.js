@@ -16,6 +16,7 @@ exports.createShipping = async (req, res) => {
       mobileNumber,
       address1,
       address2,
+      deliveryDate,
       orderNotes,
       userId,
       orderId
@@ -25,10 +26,10 @@ exports.createShipping = async (req, res) => {
 
     const query = `
       INSERT INTO shipping 
-      (shippingId, firstName, lastName, city, mobileNumber, address1, address2, orderNotes, userId, orderId)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (shippingId, firstName, lastName, city, mobileNumber, address1, address2,deliveryDate, orderNotes, userId, orderId)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?)
     `;
-    const values = [shippingId, firstName, lastName, city, mobileNumber, address1, address2, orderNotes, userId, orderId];
+    const values = [shippingId, firstName, lastName, city, mobileNumber, address1, address2,deliveryDate, orderNotes, userId, orderId];
 
     connection.query(query, values, (err, result) => {
       if (err) return res.status(400).json({ message: err.message });
@@ -88,6 +89,8 @@ exports.getShippingById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
 
 // Update a shipping record by ID
 exports.updateShippingById = async (req, res) => {
@@ -165,6 +168,34 @@ exports.updateShippingById = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+exports.updateDeliveryDate = (req, res) => {
+  const { orderId } = req.params;
+  const { deliveryDate } = req.body;
+
+  if (!deliveryDate) {
+    return res.status(400).json({ error: 'Delivery date is required' });
+  }
+
+  const query = `
+    UPDATE shipping
+    SET deliveryDate = ?
+    WHERE orderId = ?
+  `;
+
+  connection.query(query, [deliveryDate, orderId], (err, result) => {
+    if (err) {
+      console.error('Error updating delivery date:', err);
+      return res.status(500).json({ error: 'Failed to update delivery date' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'No shipping record found for the given orderId' });
+    }
+
+    res.json({ message: 'Delivery date updated successfully' });
+  });
 };
 
 // Delete a shipping record by ID
