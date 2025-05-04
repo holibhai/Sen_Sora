@@ -18,7 +18,7 @@ const getStatusBadge = (status) => {
           <CheckCircle size={14} /> Processing
         </span>
       );
-    case "pending":
+    case "Pending":
       return (
         <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-xs flex items-center gap-1">
           <Clock size={14} /> Pending
