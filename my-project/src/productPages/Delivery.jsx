@@ -143,6 +143,18 @@ const Delivery = ({ onShippingCostChange, onCityChange, formData, setFormData })
             />
           </div>
 
+          {/* ✅ DELIVERY DATE FIELD */}
+          <div className="flex flex-col gap-2">
+            <label htmlFor="deliveryDate" className="text-gray-500">Delivery Date</label>
+            <input
+              type="date"
+              name="deliveryDate"
+              value={formData.deliveryDate}
+              onChange={handleChange}
+              className="bg-transparent border border-gray-400 py-3 px-10"
+            />
+          </div>
+
           <div className="flex flex-col gap-3">
             <label htmlFor="orderNotes" className="text-gray-500">Order Notes (Optional)</label>
             <textarea
