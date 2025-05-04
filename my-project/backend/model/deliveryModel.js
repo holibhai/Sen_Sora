@@ -14,7 +14,8 @@ const createShippingTable = () => {
       orderNotes TEXT,
       deliveryDate DATETIME DEFAULT NULL, -- Optional delivery date
       userId VARCHAR(255) NOT NULL,
-      orderId VARCHAR(255) NOT NULL
+      orderId VARCHAR(255) NOT NULL,
+      orderStatus VARCHAR(50) NOT NULL DEFAULT 'Not Accepted'
     );
   `;
 
