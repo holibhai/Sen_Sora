@@ -7,12 +7,16 @@ import {
   DollarSign,
   PackageCheck,
 } from "lucide-react";
+  
 
 const AdminHome = () => {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+  console.log(orders);
 
-  const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+  // const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+  const totalRevenue = orders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
+
 
   // Sample customer count (replace with actual count logic if needed)
   const customerCount = 98;
@@ -31,7 +35,7 @@ const AdminHome = () => {
     },
     {
       title: "Revenue",
-      value: `₹${totalRevenue}`,
+      value: `Rs.${totalRevenue}`,
       icon: <DollarSign size={24} className="text-yellow-500" />,
     },
     {
@@ -131,7 +135,7 @@ const AdminHome = () => {
                   >
                     {order.status || "Pending"}
                   </td>
-                  <td className="py-2">₹{order.total}</td>
+                  <td className="py-2">Rs.{order.total}</td>
                 </tr>
               ))}
             </tbody>
