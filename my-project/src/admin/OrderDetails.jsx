@@ -9,7 +9,8 @@ import {
   Phone,
   StickyNote,
   ShoppingCart,
-  IndianRupee
+  IndianRupee,
+  PackageOpen 
 } from 'lucide-react';
 
 const OrderDetails = () => {
@@ -144,6 +145,9 @@ const OrderDetails = () => {
             </p>
             <p className="flex items-center gap-2">
               <Phone className="w-4 h-4 text-gray-600" /> {shipping.mobileNumber}
+            </p>
+            <p className="flex items-center gap-2">
+              <PackageOpen  className="w-4 h-4 text-gray-600" /> Order {shipping.orderStatus}
             </p>
             <p className="flex items-center gap-2">
               <StickyNote className="w-4 h-4 text-gray-600" /> Notes: {shipping.orderNotes || 'None'}
