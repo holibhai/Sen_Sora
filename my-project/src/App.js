@@ -29,15 +29,18 @@ import OrderDetails from "./admin/OrderDetails";
 
 import TrackLayout from "./Track/TrackLayout";
 import TrackHome from "./Track/TrackHome";
+import OrderDetail from "./Track/OrderDetail";
+import OrderFullDetail from "./Track/OrderFullDetail";
 
 const App = () => {
   const location = useLocation();
   const [count, setCount] = useState(0);
 
+
   // Check if the current path starts with "/admin" or "/tracking"
   const isAdminOrTrackingRoute =
     location.pathname.startsWith("/admin") ||
-    location.pathname.startsWith("/tracking");
+    location.pathname.startsWith("/track");
 
   return (
     <div className="bg-gradient-to-tr from-indigo-500/30 to-pink-500/30 min-h-screen">
@@ -75,9 +78,12 @@ const App = () => {
         </Route>
 
         {/* Tracking Routes */}
-        <Route path="/tracking" element={<TrackLayout />}>
+        <Route path="/track" element={<TrackLayout />}>
           <Route index element={<TrackHome />} />
-          {/* Add more tracking child routes here if needed */}
+          <Route path="orderdetail" element={<OrderDetail />} />
+          <Route path="orderfullDetail/:orderId" element={<OrderFullDetail />} />
+
+
         </Route>
       </Routes>
 
