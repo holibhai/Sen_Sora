@@ -148,6 +148,9 @@ const OrderDetails = () => {
             <p className="flex items-center gap-2">
               <StickyNote className="w-4 h-4 text-gray-600" /> Notes: {shipping.orderNotes || 'None'}
             </p>
+              <p className="flex items-center gap-2 text-orange-600">
+                          <StickyNote className="w-4 h-4 text-gray-600" /> ShippingId: #{shipping.shippingId}
+                        </p>
           </div>
         )}
       </div>
