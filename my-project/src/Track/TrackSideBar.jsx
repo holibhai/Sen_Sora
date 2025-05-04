@@ -5,10 +5,9 @@ import {
   Menu,
   X,
   LayoutDashboard,
-  Truck,
   ListOrdered,
-  User,
-  LogOut,
+  UserRound,
+  Users2,
 } from "lucide-react";
 
 const TrackSidebar = () => {
@@ -17,10 +16,9 @@ const TrackSidebar = () => {
 
   const navLinks = [
     { to: "/track", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
-    { to: "/track/vehicles", label: "Vehicles", icon: <Truck size={18} /> },
-    { to: "/track/requests", label: "Fuel Requests", icon: <ListOrdered size={18} /> },
-    { to: "/track/profile", label: "Profile", icon: <User size={18} /> },
-    { to: "/logout", label: "Logout", icon: <LogOut size={18} /> },
+    { to: "/track/orderdetail", label: "Orders", icon: <ListOrdered size={18} /> },
+    { to: "/track/users", label: "Users", icon: <UserRound size={18} /> },
+    { to: "/track/employees", label: "Employees", icon: <Users2 size={18} /> },
   ];
 
   return (
