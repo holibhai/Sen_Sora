@@ -1,7 +1,5 @@
 import React from "react";
 import PriceRange from "./PriceRange";
-import CategoryList from "./CategoryList";
-import OfferList from "./OfferList";
 import LatestProducts from "./LatestProducts";
 import { Grid3x3 } from 'lucide-react';
 import { List } from 'lucide-react';
@@ -14,8 +12,6 @@ const ProductListed = () => {
   const location = useLocation();
   const category = location.state?.category;
   const sub=location.state?.sub;
-  console.log(sub)
-  console.log(category);
 
   const [displayType,setDisplayedType]=useState(true);
 
@@ -34,18 +30,8 @@ const ProductListed = () => {
               <PriceRange />
             </div>
           </div>
-          <div>
-            <h1 className="text-gray-500 font-semibold text-lg py-4">CATAGORIES</h1>
-            <div>
-                <CategoryList />
-            </div>
-          </div>
-          <div>
-            <h1 className="text-gray-500 font-semibold text-lg py-4">OFFERS</h1>
-            <div>
-                <OfferList />
-            </div>
-          </div>
+         
+          
           <div>
             <h1 className="text-gray-500 font-semibold text-lg py-4">LATEST PRODUCTS</h1>
             <div>

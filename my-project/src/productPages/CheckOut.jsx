@@ -130,12 +130,13 @@ const CheckOut = ({count,setCount}) => {
         </table>
 
         <div className="flex justify-between items-center my-10">
+          <Link to="/products">
           <button className="bg-gray-700 p-4 text-white text-xs font-semibold">
             RETURN TO SHOP
           </button>
-          <button className="bg-gray-700 p-4 text-white text-xs font-semibold">
-            UPDATE CART
-          </button>
+          </Link>
+         
+          
         </div>
       </div>
 
