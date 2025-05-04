@@ -19,17 +19,32 @@ exports.createShipping = async (req, res) => {
       deliveryDate,
       orderNotes,
       userId,
-      orderId
+      orderId,
+      orderStatus = "Not Accepted" // Default value if not provided
     } = req.body;
 
     const shippingId = generateShippingId();
 
     const query = `
       INSERT INTO shipping 
-      (shippingId, firstName, lastName, city, mobileNumber, address1, address2,deliveryDate, orderNotes, userId, orderId)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?)
+      (shippingId, firstName, lastName, city, mobileNumber, address1, address2, deliveryDate, orderNotes, userId, orderId, orderStatus)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    const values = [shippingId, firstName, lastName, city, mobileNumber, address1, address2,deliveryDate, orderNotes, userId, orderId];
+    
+    const values = [
+      shippingId,
+      firstName,
+      lastName,
+      city,
+      mobileNumber,
+      address1,
+      address2,
+      deliveryDate,
+      orderNotes,
+      userId,
+      orderId,
+      orderStatus
+    ];
 
     connection.query(query, values, (err, result) => {
       if (err) return res.status(400).json({ message: err.message });
@@ -195,6 +210,17 @@ exports.updateDeliveryDate = (req, res) => {
     }
 
     res.json({ message: 'Delivery date updated successfully' });
+  });
+};
+
+exports.updateDeliveryStatus = (req, res) => {
+  const { shippingId } = req.params;
+  const { orderStatus } = req.body;
+
+  const query = 'UPDATE shipping SET orderStatus = ? WHERE shippingId = ?';
+  connection.query(query, [orderStatus, shippingId], (err, result) => {
+    if (err) return res.status(500).json({ message: err.message });
+    res.json({ message: 'Delivery status updated successfully' });
   });
 };
 
