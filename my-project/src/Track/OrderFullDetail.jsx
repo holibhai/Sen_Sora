@@ -9,8 +9,7 @@ import {
   Phone,
   StickyNote,
   ShoppingCart,
-  IndianRupee,
-  CalendarPlus
+  IndianRupee
 } from 'lucide-react';
 
 const OrderFullDetail = () => {
@@ -57,28 +56,30 @@ const OrderFullDetail = () => {
     fetchOrderDetails();
   }, [orderId]);
 
-  const handleStatusUpdate = async () => {
+  const handleDeliveryStatusUpdate = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/order/updateStatus/${orderId}`, {
+      const response = await fetch(`http://localhost:5000/api/delivery/updateStatus/${shipping.shippingId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ status })
+        body: JSON.stringify({ orderStatus: shipping.orderStatus })
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update status');
+        throw new Error('Failed to update delivery status');
       }
 
-      setStatusMessage('Status updated successfully!');
+      setDeliveryMessage('Delivery status updated successfully!');
     } catch (error) {
-      console.error('Error updating status:', error);
-      setStatusMessage('Failed to update status');
+      console.error('Error updating delivery status:', error);
+      setDeliveryMessage('Failed to update delivery status');
     }
   };
 
-   
+  const handleOrderStatusChange = (e) => {
+    setShipping(prev => ({ ...prev, orderStatus: e.target.value }));
+  };
 
   if (loading) return <div className="p-8 text-center text-lg font-semibold">Loading...</div>;
   if (error) return <div className="p-8 text-red-500 text-center">{error}</div>;
@@ -107,29 +108,6 @@ const OrderFullDetail = () => {
           <p className="flex items-center gap-2">
             <CalendarDays className="w-4 h-4 text-gray-600" /> Date: {new Date(order.date).toLocaleString()}
           </p>
-
-          {/* <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Update Status:</label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2"
-            >
-              <option value="Pending">Pending</option>
-              <option value="Processing">Processing</option>
-              <option value="Shipped">Shipped</option>
-              <option value="Delivered">Delivered</option>
-            </select>
-            <button
-              onClick={handleStatusUpdate}
-              className="mt-3 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
-            >
-              Update Status
-            </button>
-            {statusMessage && (
-              <p className="mt-2 text-sm text-green-600 font-medium">{statusMessage}</p>
-            )}
-          </div> */}
         </div>
 
         {/* Shipping Info */}
@@ -154,7 +132,27 @@ const OrderFullDetail = () => {
               <StickyNote className="w-4 h-4 text-gray-600" /> ShippingId: #{shipping.shippingId}
             </p>
 
-            
+            {/* Dropdown for orderStatus */}
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Update Delivery Status:</label>
+              <select
+                value={shipping.orderStatus}
+                onChange={handleOrderStatusChange}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+              >
+                <option value="Not Accepted">Not Accepted</option>
+                <option value="Accepted">Accepted</option>
+              </select>
+              <button
+                onClick={handleDeliveryStatusUpdate}
+                className="mt-3 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
+              >
+                Update Delivery Status
+              </button>
+              {deliveryMessage && (
+                <p className="mt-2 text-sm text-green-600 font-medium">{deliveryMessage}</p>
+              )}
+            </div>
           </div>
         )}
       </div>

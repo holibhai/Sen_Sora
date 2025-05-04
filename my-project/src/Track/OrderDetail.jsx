@@ -154,7 +154,7 @@ const OrderDetail = ({ count, setCount }) => {
                     : "N/A"}
                 </td>
 
-                <td className="px-6 py-4">{getStatusBadge(item.orderNotes)}</td>
+                <td className="px-6 py-4">{item.orderStatus}</td>
                 <td className="px-6 py-4 text-center space-x-3">
                   <Link to={`/track/orderfullDetail/${item.orderId}`}>
                     <button className="text-blue-600 hover:text-blue-800 transition">
