@@ -108,7 +108,7 @@ const OrderTrackUser = () => {
 
       {/* Order Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white shadow-md rounded-lg p-4 flex items-center gap-4">
+        <div className="bg-white shadow-lg rounded-lg  p-4 flex items-center gap-4">
           <PackageSearch className="text-yellow-500" size={32} />
           <div>
             <p className="text-gray-500 text-sm">Total Orders</p>
