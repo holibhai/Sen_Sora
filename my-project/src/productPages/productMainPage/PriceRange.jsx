@@ -47,8 +47,8 @@ const PriceRange = ({minValue,setMinValue}) => {
 
       {/* Min & Max Labels */}
       <div className="flex justify-between text-gray-500 text-sm mb-2">
-        <span>${minLimit}</span>
-        <span>${maxLimit}</span>
+        <span>Rs.{minLimit}</span>
+        <span>Rs.{maxLimit}</span>
       </div>
 
       {/* Range Inputs */}
@@ -80,8 +80,8 @@ const PriceRange = ({minValue,setMinValue}) => {
 
       {/* Display Selected Range */}
       <div className="flex justify-between mt-4 text-gray-700 font-medium">
-        <span>Min: ${minValue}</span>
-        <span>Max: ${maxValue}</span>
+        <span>Min: Rs.{minValue}</span>
+        <span>Max: Rs.{maxValue}</span>
       </div>
     </div>
   );
