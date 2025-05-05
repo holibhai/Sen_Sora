@@ -93,7 +93,7 @@ const ProductDetail = ({ count, setCount }) => {
       <div className="mx-10 md:mx-36">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* Product Image */}
-          <div className="w-full flex flex-col gap-5">
+          <div className="w-[500px] flex flex-col gap-5">
             <img
               src={`http://localhost:5000${product.imageUrl}`}
               alt={product.name}
