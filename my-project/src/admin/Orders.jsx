@@ -56,7 +56,7 @@ const Orders = () => {
         }
         const data = await response.json();
         setOrders(data);
-        console.log("Fetched products:", data); // For debugging
+      
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -65,7 +65,7 @@ const Orders = () => {
     };
 
     fetchOrders();
-  }, []);
+  }, [orders]);
 
   /*const filteredOrders = orders.filter((order) =>
     order.customer.toLowerCase().includes(searchTerm.toLowerCase())
