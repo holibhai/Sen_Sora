@@ -100,9 +100,9 @@ const AddProduct = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Add New Product</h2>
+    <div className="min-h-screen p-6">
+      <div className="max-w-4xl mx-auto bg-gray-700 p-8 rounded-lg shadow-xl">
+        <h2 className="text-2xl font-bold mb-6 text-white">Add New Product</h2>
 
         {error && (
           <div className="flex items-center gap-2 mb-4 bg-red-100 text-red-700 px-4 py-2 rounded">
@@ -122,7 +122,7 @@ const AddProduct = () => {
             placeholder="Product Name *"
             value={formData.name}
             onChange={handleChange}
-            className="border border-gray-300 rounded px-4 py-2 w-full"
+            className="border border-gray-300  rounded px-4 py-2 w-full"
           />
 
           <select
