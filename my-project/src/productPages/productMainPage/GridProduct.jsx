@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const ITEMS_PER_PAGE = 12;
 
-const GridProduct = ({ category, sub }) => {
+const GridProduct = ({ category, sub, minValue = 0 }) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [products, setProducts] = useState([]);
@@ -12,7 +12,7 @@ const GridProduct = ({ category, sub }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch all products once
+  // Fetch all products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -32,9 +32,9 @@ const GridProduct = ({ category, sub }) => {
     fetchProducts();
   }, []);
 
-  // Apply filtering logic based on `category` and `sub`
+  // Apply filtering logic
   useEffect(() => {
-    let filtered = products;
+    let filtered = [...products];
 
     if (category) {
       filtered = filtered.filter((product) => product.type === category);
@@ -44,12 +44,15 @@ const GridProduct = ({ category, sub }) => {
       filtered = filtered.filter((product) => product.category === sub);
     }
 
+    if (minValue !== undefined && minValue !== null) {
+      filtered = filtered.filter((product) => product.price >= minValue);
+    }
+
     setFilteredProducts(filtered);
     setCurrentPage(1);
-  }, [products, category, sub]);
+  }, [products, category, sub, minValue]);
 
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
-
   const paginatedProducts = filteredProducts.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
@@ -103,7 +106,7 @@ const GridProduct = ({ category, sub }) => {
     <div className="pl-10 pr-10 w-full">
       {filteredProducts.length === 0 ? (
         <div className="text-center text-gray-500 mt-10">
-          No products found for this category.
+          No products found for this filter.
         </div>
       ) : (
         <>
