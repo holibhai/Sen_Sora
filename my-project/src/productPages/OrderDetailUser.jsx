@@ -56,62 +56,62 @@ const OrderDetailUser = () => {
   if (error) return <div className="p-8 text-red-500 text-center">{error}</div>;
 
   return (
-    <div className="max-w-7xl mx-auto p-6 pt-44 space-y-6">
-      <h2 className="text-3xl font-bold text-center mb-6 text-indigo-700">
-        Your Order - #{orderId}
+    <div className="max-w-7xl mx-auto p-6 pt-44 space-y-6 text-gray-700">
+      <h2 className="text-3xl font-bold  mb-6 text-gray-500">
+         Order ID - #{orderId}
       </h2>
 
       {/* Summary and Shipping Section Side by Side */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Order Summary */}
-        <div className=" rounded-xl shadow p-6 space-y-3">
-          <h3 className="text-xl font-semibold text-indigo-700 flex items-center gap-2">
-            <PackageCheck className="w-5 h-5" /> Order Summary
+        <div className=" rounded-xl shadow-xl p-6 space-y-3">
+          <h3 className="text-xl font-bold flex items-center gap-2">
+            <PackageCheck className="w-5 h-5 text-orange-400" />  Order Summary
           </h3>
           <p className="flex items-center gap-2">
-            <ShoppingCart className="w-4 h-4 text-gray-600" /> Total Products: {order.totalProducts}
+            <ShoppingCart className="w-4 h-4 text-orange-400" /> Total Products: {order.totalProducts}
           </p>
           <p className="flex items-center gap-2">
-            <PackageCheck className="w-4 h-4 text-gray-600" /> Status: {order.status}
+            <PackageCheck className="w-4 h-4 text-orange-400" /> Status: {order.status}
           </p>
           <p className="flex items-center gap-2">
-            <IndianRupee className="w-4 h-4 text-gray-600" /> Total: Rs.{order.total}
+            <IndianRupee className="w-4 h-4 text-orange-400" /> Total: Rs.{order.total}
           </p>
           <p className="flex items-center gap-2">
-            <CalendarDays className="w-4 h-4 text-gray-600" /> Date: {new Date(order.date).toLocaleString()}
+            <CalendarDays className="w-4 h-4 text-orange-400" /> Date: {new Date(order.date).toLocaleString()}
           </p>
         </div>
 
         {/* Shipping Info */}
         {shipping && (
-          <div className=" rounded-xl shadow p-6 space-y-3">
-            <h3 className="text-xl font-semibold text-indigo-700 flex items-center gap-2">
-              <Truck className="w-5 h-5" /> Delivery Information
+          <div className=" rounded-xl shadow-xl p-6 space-y-3">
+            <h3 className="text-xl font-bold flex items-center gap-2">
+              <Truck className="w-5 h-5 text-orange-400" /> Delivery Information
             </h3>
             <p className="flex items-center gap-2">
-              <User className="w-4 h-4 text-gray-600" /> {shipping.firstName} {shipping.lastName}
+              <User className="w-4 h-4 text-orange-400" /> {shipping.firstName} {shipping.lastName}
             </p>
             <p className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-gray-600" /> {shipping.address1}, {shipping.address2}, {shipping.city}
+              <MapPin className="w-4 h-4 text-orange-400" /> {shipping.address1}, {shipping.address2}, {shipping.city}
             </p>
             <p className="flex items-center gap-2">
-              <Phone className="w-4 h-4 text-gray-600" /> {shipping.mobileNumber}
+              <Phone className="w-4 h-4 text-orange-400" /> {shipping.mobileNumber}
             </p>
             <p className="flex items-center gap-2">
-              <StickyNote className="w-4 h-4 text-gray-600" /> Notes: {shipping.orderNotes || 'None'}
+              <StickyNote className="w-4 h-4 text-orange-400" /> Notes: {shipping.orderNotes || 'None'}
             </p>
           </div>
         )}
       </div>
 
       {/* Order Items */}
-      <div className=" rounded-xl shadow p-6">
+      <div className=" rounded-xl shadow-xl p-6">
         <h3 className="text-xl font-semibold text-indigo-700 mb-4 flex items-center gap-2">
           <ShoppingCart className="w-5 h-5" /> Ordered Products
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {items.map(item => (
-            <div key={item.id} className="flex gap-4 border rounded-lg p-4 shadow-sm hover:shadow-md transition">
+            <div key={item.id} className="flex gap-4 border  rounded-lg  p-4 shadow-xl hover:shadow-md transition">
               <img
                 src={`http://localhost:5000${item.imageUrl}`}
                 alt={item.productName}
