@@ -12,6 +12,8 @@ const ProductListed = () => {
   const location = useLocation();
   const category = location.state?.category;
   const sub=location.state?.sub;
+    const [minValue, setMinValue] = useState(0);
+  
 
   const [displayType,setDisplayedType]=useState(true);
 
@@ -27,7 +29,7 @@ const ProductListed = () => {
           <div>
             <h1 className="text-gray-500 font-semibold text-lg">PRICE RANGE</h1>
             <div>
-              <PriceRange />
+              <PriceRange  minValue={minValue}  setMinValue={setMinValue}/>
             </div>
           </div>
          
@@ -46,7 +48,7 @@ const ProductListed = () => {
             </div>
              {displayType? <div>
                   <div className="">
-                      <GridProduct category={category} sub={sub}/>
+                      <GridProduct category={category} sub={sub} minValue={minValue}/>
                   </div>
                 </div>:
                 <div>
