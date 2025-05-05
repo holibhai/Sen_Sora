@@ -9,6 +9,8 @@ import {
   UserRound,
   Users2,
 } from "lucide-react";
+import Logo from "../assets/__-removebg-preview.png";
+
 
 const TrackSidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -37,9 +39,12 @@ const TrackSidebar = () => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:static md:block`}
       >
-        <h2 className="text-2xl font-bold text-center mb-6 text-green-400">
-          Fuel Tracker
-        </h2>
+       <div className="flex items-center gap-1 cursor-pointer">
+                <img src={Logo} alt="Logo" className="w-[70px] h-[70px]" />
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  Sen-Sora
+                </h1>
+              </div>
 
         {navLinks.map((link, index) => (
           <NavLink

@@ -115,7 +115,7 @@ const GridProduct = ({ category, sub, minValue = 0 }) => {
             {paginatedProducts.map((product) => (
               <div
                 key={product.id}
-                className="w-full h-full border border-gray-300 relative hover:shadow-xl transition-shadow rounded-lg overflow-hidden bg-white cursor-pointer"
+                className="w-full h-full border border-gray-300 shadow-xl relative hover:shadow-2xl transition-shadow rounded-lg overflow-hidden cursor-pointer"
                 onClick={() => handleClick(product.id)}
               >
                 {/* Favorite Icon */}
@@ -136,17 +136,21 @@ const GridProduct = ({ category, sub, minValue = 0 }) => {
                     <h1 className="text-gray-800 font-semibold">{product.name}</h1>
                     <div className="flex gap-3 items-baseline">
                       <p className="text-gray-400 line-through text-sm">
-                        ₹{(product.price * 1.2).toFixed(2)}
+                        Rs.{(product.price * 1.2).toFixed(2)}
                       </p>
-                      <p className="text-red-600 font-bold">₹{product.price}</p>
+                      <p className="text-red-600 font-bold">Rs.{product.price}</p>
                     </div>
+                    <div className="flex items-center justify-between my-2">
                     <span className="text-xs bg-green-600 text-white px-3 py-1 rounded-full mt-2 inline-block">
                       In stock
                     </span>
+                    <div className="bg-gray-700 p-2 rounded-full">
+                    <ShoppingCart className="text-white w-4 h-4" />
                   </div>
-                  <div className="bg-gray-700 p-2 rounded-full">
-                    <ShoppingCart className="text-white w-5 h-5" />
+                    </div>
+                    
                   </div>
+                 
                 </div>
               </div>
             ))}
