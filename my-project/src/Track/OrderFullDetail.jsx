@@ -86,13 +86,13 @@ const OrderFullDetail = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
-      <h2 className="text-3xl font-bold text-center mb-6 text-indigo-600">
+      <h2 className="text-3xl font-bold  mb-6 text-indigo-600">
         Order Details - #{orderId}
       </h2>
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Order Summary */}
-        <div className="bg-white rounded-xl shadow p-6 space-y-3">
+        <div className=" rounded-xl shadow p-6 space-y-3">
           <h3 className="text-xl font-semibold text-indigo-700 flex items-center gap-2">
             <PackageCheck className="w-5 h-5" /> Order Summary
           </h3>
@@ -112,7 +112,7 @@ const OrderFullDetail = () => {
 
         {/* Shipping Info */}
         {shipping && (
-          <div className="bg-white rounded-xl shadow p-6 space-y-3">
+          <div className=" rounded-xl shadow p-6 space-y-3">
             <h3 className="text-xl font-semibold text-indigo-700 flex items-center gap-2">
               <Truck className="w-5 h-5" /> Delivery Information
             </h3>
@@ -158,7 +158,7 @@ const OrderFullDetail = () => {
       </div>
 
       {/* Order Items */}
-      <div className="bg-white rounded-xl shadow p-6">
+      <div className=" rounded-xl shadow p-6">
         <h3 className="text-xl font-semibold text-indigo-700 mb-4 flex items-center gap-2">
           <ShoppingCart className="w-5 h-5" /> Ordered Products
         </h3>
