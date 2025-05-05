@@ -96,9 +96,9 @@ const Delivery = ({ onShippingCostChange, onCityChange, formData, setFormData })
                 name="city"
                 value={formData.city}
                 onChange={handleCityChange}
-                className="bg-transparent border border-gray-400 py-3 px-5"
+                className="bg-transparent border border-gray-400 py-3 px-5 text-gray-500"
               >
-                <option value="">-- Select City --</option>
+                <option value="">Select City</option>
                 {cities.map((cityObj) => (
                   <option key={cityObj.city} value={cityObj.city}>
                     {cityObj.city}
@@ -151,7 +151,7 @@ const Delivery = ({ onShippingCostChange, onCityChange, formData, setFormData })
               name="deliveryDate"
               value={formData.deliveryDate}
               onChange={handleChange}
-              className="bg-transparent border border-gray-400 py-3 px-10"
+              className="bg-transparent border border-gray-400 py-3 px-10 text-gray-400"
             />
           </div>
 
