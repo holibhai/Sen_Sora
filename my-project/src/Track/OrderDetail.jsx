@@ -4,11 +4,10 @@ import {
   Pencil,
   Trash2,
   CheckCircle,
-  Clock,
-  XCircle,
-  Search,
   Truck,
   PackageCheck,
+  Search,
+  XCircle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -16,24 +15,40 @@ const getStatusBadge = (status) => {
   switch (status) {
     case "Processing":
       return (
-        <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs flex items-center gap-1">
-          <CheckCircle size={14} /> Processing
+        <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-xs flex items-center gap-1">
+          <Truck size={14} /> Processing
         </span>
       );
     case "Shipped":
       return (
-        <span className="bg-blue-100 text-blue-600 px-2 py-0.5 rounded text-xs flex items-center gap-1">
+        <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs flex items-center gap-1">
           <Truck size={14} /> Shipped
         </span>
       );
     case "Delivered":
       return (
-        <span className="bg-purple-100 text-purple-600 px-2 py-0.5 rounded text-xs flex items-center gap-1">
+        <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-xs flex items-center gap-1">
           <PackageCheck size={14} /> Delivered
         </span>
       );
+    case "Accepted":
+      return (
+        <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs flex items-center gap-1">
+          <CheckCircle size={14} /> Accepted
+        </span>
+      );
+    case "Not Accepted":
+      return (
+        <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-xs flex items-center gap-1">
+          <XCircle size={14} /> Not Accepted
+        </span>
+      );
     default:
-      return null;
+      return (
+        <span className="bg-gray-200 text-gray-600 px-2 py-0.5 rounded text-xs">
+          {status}
+        </span>
+      );
   }
 };
 
@@ -46,10 +61,9 @@ const OrderDetail = ({ count, setCount }) => {
   useEffect(() => {
     const fetchShipping = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/delivery"); // Update to shipping endpoint
-        if (!response.ok) {
-          throw new Error("Failed to fetch shipping data");
-        }
+        const response = await fetch("http://localhost:5000/api/delivery");
+        if (!response.ok) throw new Error("Failed to fetch shipping data");
+
         const data = await response.json();
         setShipping(data);
         setLoading(false);
@@ -60,20 +74,16 @@ const OrderDetail = ({ count, setCount }) => {
     };
 
     fetchShipping();
-  }, [count]); // Add count in the dependency array to refetch after a change
+  }, [count]);
 
   const handleDelete = async (shippingId) => {
     try {
       const response = await fetch(
         `http://localhost:5000/api/shipping/${shippingId}`,
-        {
-          method: "DELETE",
-        }
+        { method: "DELETE" }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to delete the shipping record");
-      }
+      if (!response.ok) throw new Error("Failed to delete the shipping record");
 
       alert("Shipping record deleted successfully");
       setShipping(shipping.filter((item) => item.shippingId !== shippingId));
@@ -106,11 +116,9 @@ const OrderDetail = ({ count, setCount }) => {
   }
 
   return (
-    <div className="p-6 w-full min-h-screen bg-gray-50">
+    <div className="p-6 w-full min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          All Shipping Details
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-800">All Shipping Details</h1>
         <div className="relative">
           <input
             type="text"
@@ -139,9 +147,7 @@ const OrderDetail = ({ count, setCount }) => {
             {filteredShipping.map((item, index) => (
               <tr
                 key={index}
-                className={`border-b ${
-                  index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                }`}
+                className={`border-b ${index % 2 === 0 ? "bg-gray-300" : "bg-gray-200"}`}
               >
                 <td className="px-6 py-4 font-medium">{item.shippingId}</td>
                 <td className="px-6 py-4">
@@ -153,8 +159,9 @@ const OrderDetail = ({ count, setCount }) => {
                     ? new Date(item.deliveryDate).toLocaleDateString()
                     : "N/A"}
                 </td>
-
-                <td className="px-6 py-4">{item.orderStatus}</td>
+                <td className="px-6 py-4">
+                  {getStatusBadge(item.orderStatus)}
+                </td>
                 <td className="px-6 py-4 text-center space-x-3">
                   <Link to={`/track/orderfullDetail/${item.orderId}`}>
                     <button className="text-blue-600 hover:text-blue-800 transition">
