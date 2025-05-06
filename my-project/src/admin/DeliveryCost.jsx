@@ -101,7 +101,7 @@ const DeliveryCost = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center text-yellow-600">
+      <h1 className="text-3xl font-bold mb-6  text-gray-600">
         Delivery Cost Management
       </h1>
 

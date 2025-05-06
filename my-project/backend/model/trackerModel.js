@@ -1,10 +1,10 @@
 const { connection } = require("../db/ConnectMysql");
 
-// Function to create the 'admins' table
-const createAdminsTable = () => {
+// Function to create the 'trackers' table
+const createTrackerTable = () => {
   const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS admins (
-      adminId CHAR(36) PRIMARY KEY,
+    CREATE TABLE IF NOT EXISTS trackers (
+      trackerId CHAR(36) PRIMARY KEY,
       firstName VARCHAR(100) NOT NULL,
       lastName VARCHAR(100) NOT NULL,
       email VARCHAR(255) NOT NULL UNIQUE,
@@ -15,13 +15,13 @@ const createAdminsTable = () => {
 
   connection.query(createTableQuery, (err, result) => {
     if (err) {
-      console.error("Error creating admins table:", err);
+      console.error("Error creating trackers table:", err);
     } else {
-      console.log("Admins table created or already exists.");
+      console.log("trackers table created or already exists.");
     }
   });
 };
 
 module.exports = {
-  createAdminsTable,
+  createTrackerTable,
 };

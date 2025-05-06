@@ -6,7 +6,7 @@ const {
   signup,
   login,
   logout,
-} = require("../controller/admin.controller");
+} = require("../controller/tracker.controller");
 
 // @route   POST /api/admin/signup
 // @desc    Register a new admin

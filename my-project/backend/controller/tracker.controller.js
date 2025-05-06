@@ -4,7 +4,7 @@ const bcryptjs = require("bcryptjs");
 const generateTokenAndSetCookie = require("../utils/generateToken");
 
 // =========================
-// Admin Signup Controller
+// Tracker Signup Controller
 // =========================
 const signup = async (req, res) => {
   try {
@@ -15,7 +15,7 @@ const signup = async (req, res) => {
     }
 
     // Check if email already exists
-    connection.query("SELECT * FROM admins WHERE email = ?", [email], async (err, results) => {
+    connection.query("SELECT * FROM trackers WHERE email = ?", [email], async (err, results) => {
       if (err) {
         console.error("Database error:", err);
         return res.status(500).json({ error: "Internal Server Error" });
@@ -28,26 +28,26 @@ const signup = async (req, res) => {
       // Hash the password
       const salt = await bcryptjs.genSalt(10);
       const hashedPassword = await bcryptjs.hash(password, salt);
-      const adminId = uuidv4();
+      const trackerId = uuidv4();
 
-      // Insert new admin into database
+      // Insert new tracker into database
       const query = `
-        INSERT INTO admins (adminId, firstname, lastname, email, password)
+        INSERT INTO trackers (trackerId, firstname, lastname, email, password)
         VALUES (?, ?, ?, ?, ?)
       `;
       connection.query(
         query,
-        [adminId, firstname, lastname, email, hashedPassword],
+        [trackerId, firstname, lastname, email, hashedPassword],
         (err, result) => {
           if (err) {
             console.error("Insert error:", err);
-            return res.status(500).json({ error: "Failed to create user" });
+            return res.status(500).json({ error: "Failed to create tracker" });
           }
 
           const token = generateTokenAndSetCookie(email, res);
           res.status(201).json({
-            message: "Admin created successfully",
-            admin: { adminId, firstname, lastname, email },
+            message: "Tracker created successfully",
+            tracker: { trackerId, firstname, lastname, email },
             token,
           });
         }
@@ -60,7 +60,7 @@ const signup = async (req, res) => {
 };
 
 // =========================
-// Admin Login Controller
+// Tracker Login Controller
 // =========================
 const login = async (req, res) => {
   try {
@@ -70,7 +70,7 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "Email and password are required" });
     }
 
-    connection.query("SELECT * FROM admins WHERE email = ?", [email], async (err, results) => {
+    connection.query("SELECT * FROM trackers WHERE email = ?", [email], async (err, results) => {
       if (err) {
         console.error("Database error:", err);
         return res.status(500).json({ error: "Internal Server Error" });
@@ -80,19 +80,19 @@ const login = async (req, res) => {
         return res.status(400).json({ error: "Invalid email or password" });
       }
 
-      const admin = results[0];
-      const isPasswordCorrect = await bcryptjs.compare(password, admin.password);
+      const tracker = results[0];
+      const isPasswordCorrect = await bcryptjs.compare(password, tracker.password);
 
       if (!isPasswordCorrect) {
         return res.status(400).json({ error: "Invalid email or password" });
       }
 
-      const token = generateTokenAndSetCookie(admin.email, res);
-      const { password: _, ...adminWithoutPassword } = admin;
+      const token = generateTokenAndSetCookie(tracker.email, res);
+      const { password: _, ...trackerWithoutPassword } = tracker;
 
       res.status(200).json({
         message: "Logged in successfully",
-        admin: adminWithoutPassword,
+        tracker: trackerWithoutPassword,
         token,
       });
     });
@@ -103,7 +103,7 @@ const login = async (req, res) => {
 };
 
 // =========================
-// Admin Logout Controller
+// Tracker Logout Controller
 // =========================
 const logout = async (req, res) => {
   try {

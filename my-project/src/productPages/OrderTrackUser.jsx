@@ -10,7 +10,7 @@ const getStatusBadge = (status) => {
           <CheckCircle size={14} /> Processing
         </span>
       );
-    case "pending":
+    case "Pending":
       return (
         <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-xs flex items-center gap-1">
           <Clock size={14} /> Pending
@@ -108,7 +108,7 @@ const OrderTrackUser = () => {
 
       {/* Order Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white shadow-md rounded-lg p-4 flex items-center gap-4">
+        <div className="bg-white shadow-lg rounded-lg  p-4 flex items-center gap-4">
           <PackageSearch className="text-yellow-500" size={32} />
           <div>
             <p className="text-gray-500 text-sm">Total Orders</p>

@@ -12,11 +12,16 @@ exports.createOrder = async (req, res) => {
     const { userId, totalProducts, total, status, date } = req.body;
     const orderId = generateOrderId();
 
+    // Capitalize first letter of status if provided, or use default
+    const formattedStatus = status
+      ? status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()
+      : 'Pending';
+
     const query = `
       INSERT INTO orders (orderId, userId, totalProducts, total, status, date)
       VALUES (?, ?, ?, ?, ?, ?)
     `;
-    const values = [orderId, userId, totalProducts, total, status, date];
+    const values = [orderId, userId, totalProducts, total, formattedStatus, date];
 
     connection.query(query, values, (err, result) => {
       if (err) return res.status(400).json({ message: err.message });
@@ -30,6 +35,7 @@ exports.createOrder = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Get all orders
 exports.getAllOrders = async (req, res) => {

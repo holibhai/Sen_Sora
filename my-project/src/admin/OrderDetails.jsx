@@ -9,7 +9,8 @@ import {
   Phone,
   StickyNote,
   ShoppingCart,
-  IndianRupee
+  IndianRupee,
+  PackageOpen 
 } from 'lucide-react';
 
 const OrderDetails = () => {
@@ -81,28 +82,28 @@ const OrderDetails = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
-      <h2 className="text-3xl font-bold text-center mb-6 text-indigo-600">
+      <h2 className="text-3xl font-bold  mb-6 text-indigo-600">
         Order Details - #{orderId}
       </h2>
 
       {/* Summary and Shipping Section Side by Side */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Order Summary */}
-        <div className="bg-white rounded-xl shadow p-6 space-y-3">
-          <h3 className="text-xl font-semibold text-indigo-700 flex items-center gap-2">
+        <div className=" rounded-xl shadow-xl p-6 space-y-3">
+          <h3 className="text-xl font-semibold text-gray-700 flex items-center gap-2">
             <PackageCheck className="w-5 h-5" /> Order Summary
           </h3>
           <p className="flex items-center gap-2">
-            <ShoppingCart className="w-4 h-4 text-gray-600" /> Total Products: {order.totalProducts}
+            <ShoppingCart className="w-4 h-4 text-orange-500" /> Total Products: {order.totalProducts}
           </p>
           <p className="flex items-center gap-2">
-            <PackageCheck className="w-4 h-4 text-gray-600" /> Status: {order.status}
+            <PackageCheck className="w-4 h-4 text-orange-500" /> Status: {order.status}
           </p>
           <p className="flex items-center gap-2">
-            <IndianRupee className="w-4 h-4 text-gray-600" /> Total: Rs.{order.total}
+            <IndianRupee className="w-4 h-4 text-orange-500" /> Total: Rs.{order.total}
           </p>
           <p className="flex items-center gap-2">
-            <CalendarDays className="w-4 h-4 text-gray-600" /> Date: {new Date(order.date).toLocaleString()}
+            <CalendarDays className="w-4 h-4 text-orange-500" /> Date: {new Date(order.date).toLocaleString()}
           </p>
 
           {/* Status Update Dropdown */}
@@ -120,7 +121,7 @@ const OrderDetails = () => {
             </select>
             <button
               onClick={handleStatusUpdate}
-              className="mt-3 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
+              className="mt-3 bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-md"
             >
               Update Status
             </button>
@@ -132,34 +133,40 @@ const OrderDetails = () => {
 
         {/* Shipping Info */}
         {shipping && (
-          <div className="bg-white rounded-xl shadow p-6 space-y-3">
-            <h3 className="text-xl font-semibold text-indigo-700 flex items-center gap-2">
+          <div className=" rounded-xl shadow-xl p-6 space-y-3">
+            <h3 className="text-xl font-semibold text-gray-700 flex items-center gap-2">
               <Truck className="w-5 h-5" /> Delivery Information
             </h3>
             <p className="flex items-center gap-2">
-              <User className="w-4 h-4 text-gray-600" /> {shipping.firstName} {shipping.lastName}
+              <User className="w-4 h-4 text-orange-500" /> {shipping.firstName} {shipping.lastName}
             </p>
             <p className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-gray-600" /> {shipping.address1}, {shipping.address2}, {shipping.city}
+              <MapPin className="w-4 h-4 text-orange-500" /> {shipping.address1}, {shipping.address2}, {shipping.city}
             </p>
             <p className="flex items-center gap-2">
-              <Phone className="w-4 h-4 text-gray-600" /> {shipping.mobileNumber}
+              <Phone className="w-4 h-4 text-orange-500" /> {shipping.mobileNumber}
             </p>
             <p className="flex items-center gap-2">
-              <StickyNote className="w-4 h-4 text-gray-600" /> Notes: {shipping.orderNotes || 'None'}
+              <PackageOpen  className="w-4 h-4 text-orange-500" /> Order {shipping.orderStatus}
             </p>
+            <p className="flex items-center gap-2">
+              <StickyNote className="w-4 h-4 text-orange-500" /> Notes: {shipping.orderNotes || 'None'}
+            </p>
+              <p className="flex items-center gap-2 text-orange-600">
+                          <StickyNote className="w-4 h-4 text-gray-600" /> ShippingId: #{shipping.shippingId}
+                        </p>
           </div>
         )}
       </div>
 
       {/* Order Items */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <h3 className="text-xl font-semibold text-indigo-700 mb-4 flex items-center gap-2">
+      <div className=" rounded-xl shadow-xl p-6">
+        <h3 className="text-xl font-semibold text-gray-700 mb-4 flex items-center gap-2">
           <ShoppingCart className="w-5 h-5" /> Ordered Products
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {items.map(item => (
-            <div key={item.id} className="flex gap-4 border rounded-lg p-4 shadow-sm hover:shadow-md transition">
+            <div key={item.id} className="flex gap-4 border rounded-lg p-4 shadow-2xl hover:shadow-md transition">
               <img
                 src={`http://localhost:5000${item.imageUrl}`}
                 alt={item.productName}

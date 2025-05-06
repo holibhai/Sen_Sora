@@ -96,9 +96,9 @@ const Delivery = ({ onShippingCostChange, onCityChange, formData, setFormData })
                 name="city"
                 value={formData.city}
                 onChange={handleCityChange}
-                className="bg-transparent border border-gray-400 py-3 px-5"
+                className="bg-transparent border border-gray-400 py-3 px-5 text-gray-500"
               >
-                <option value="">-- Select City --</option>
+                <option value="">Select City</option>
                 {cities.map((cityObj) => (
                   <option key={cityObj.city} value={cityObj.city}>
                     {cityObj.city}
@@ -140,6 +140,18 @@ const Delivery = ({ onShippingCostChange, onCityChange, formData, setFormData })
               onChange={handleChange}
               placeholder="Apartment, suite, unit etc..."
               className="bg-transparent border border-gray-400 py-3 px-10"
+            />
+          </div>
+
+          {/* ✅ DELIVERY DATE FIELD */}
+          <div className="flex flex-col gap-2">
+            <label htmlFor="deliveryDate" className="text-gray-500">Delivery Date</label>
+            <input
+              type="date"
+              name="deliveryDate"
+              value={formData.deliveryDate}
+              onChange={handleChange}
+              className="bg-transparent border border-gray-400 py-3 px-10 text-gray-400"
             />
           </div>
 

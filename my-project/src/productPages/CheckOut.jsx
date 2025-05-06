@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, Trash } from "lucide-react";
 import sideImage from "../assets/cake11.jpg";
 import { Link } from "react-router-dom";
 
-const CheckOut = () => {
+const CheckOut = ({count,setCount}) => {
   const [pdata, setPdata] = useState([]);
 
-  // Fetch cart items on mount
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
         const userId = localStorage.getItem("userId");
         const response = await fetch(`http://localhost:5000/api/cart/${userId}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch cart items.");
-        }
+        if (!response.ok) throw new Error("Failed to fetch cart items.");
         const data = await response.json();
         setPdata(data);
       } catch (err) {
@@ -23,8 +20,9 @@ const CheckOut = () => {
     };
 
     fetchCartItems();
-  }, []);
+  }, [count]);
 
+  // Quantity change handlers
   const handleIncrease = async (index,cartId) => {
     console.log(cartId)
     const updatedData = [...pdata];
@@ -36,7 +34,7 @@ const CheckOut = () => {
       });
 
       if (res.ok) {
-  
+        // Successfully updated quantity on backend
       } else {
         console.error("Failed to increase quantity");
       }
@@ -44,41 +42,6 @@ const CheckOut = () => {
       console.error("Error increasing quantity:", error);
     }
   };
-
-    
-    const handleCheckout = async () => {
-      const stripe=await loadStripe("")
-      const userId = localStorage.getItem("userId");  
-      const orderData = {
-        userId: userId, 
-        items: pdata.map(item => ({
-          productId: item.id,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-      };
-      
-      try {
-        const response = await fetch("http://localhost:5000/api/orders", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(orderData),
-        });
-
-        if (response.ok) {
-          alert("Order placed successfully!");
-          // Optionally, clear the cart or redirect the user
-        } else {
-          alert("Failed to place the order.");
-        }
-      } catch (error) {
-        console.error("Error during checkout:", error);
-        alert("An error occurred during checkout.");
-      }
-    };
-      
 
   const handleDecrease = async (index,cartId) => {
     console.log(index);
@@ -88,22 +51,29 @@ const CheckOut = () => {
       updatedData[index].quantity -= 1;
       setPdata(updatedData);
       try {
-        const res = await fetch(`http://localhost:5000/api/cart/decrement/${cartId}`, {
-          method: 'PUT',
-        });
-
-        if (res.ok) {
-          // Successfully updated quantity on backend
-        } else {
-          console.error("Failed to decrease quantity");
-        }
+        await fetch(`http://localhost:5000/api/cart/decrement/${cartId}`, { method: 'PUT' });
       } catch (error) {
         console.error("Error decreasing quantity:", error);
       }
     }
   };
 
-  // Calculate total amount
+  const handleDelete = async (cartId) => {
+    setCount((count)=>count-1)
+    try {
+      const response = await fetch(`http://localhost:5000/api/cart/${cartId}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setPdata((prevData) => prevData.filter((item) => item.id !== cartId));
+      } else {
+        alert("Failed to delete item.");
+      }
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
+  };
+
   const calculateSubtotal = (item) => item.price * item.quantity;
   const orderTotal = pdata.reduce((sum, item) => sum + calculateSubtotal(item), 0);
 
@@ -118,6 +88,7 @@ const CheckOut = () => {
               <th className="py-3 px-6 text-left">Price</th>
               <th className="py-3 px-6 text-left">Quantity</th>
               <th className="py-3 px-6 text-left">Subtotal</th>
+              <th className="py-3 px-6 text-left">Action</th>
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm">
@@ -136,7 +107,7 @@ const CheckOut = () => {
                   <div className="flex items-center gap-12 pb-4">
                     <div className="flex items-center bg-gray-600 my-3">
                       <button
-                        onClick={() => handleDecrease(index,item.id)}
+                        onClick={() => handleDecrease(index, item.id)}
                         className="p-2 bg-gray-400 shadow hover:bg-gray-200 transition"
                       >
                         <Minus size={18} className="text-gray-600" />
@@ -148,7 +119,7 @@ const CheckOut = () => {
                         className="w-12 mx-2 text-center bg-transparent text-white text-lg font-semibold focus:outline-none"
                       />
                       <button
-                        onClick={() => handleIncrease(index,item.id)}
+                        onClick={() => handleIncrease(index, item.id)}
                         className="p-2 bg-gray-400 shadow hover:bg-gray-200 transition"
                       >
                         <Plus size={18} className="text-gray-600" />
@@ -157,14 +128,27 @@ const CheckOut = () => {
                   </div>
                 </td>
                 <td className="py-4 px-6">Rs.{calculateSubtotal(item)}</td>
+                <td className="py-4 px-6">
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="text-red-600 hover:text-red-800 transition"
+                  >
+                    <Trash size={20} />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
 
         <div className="flex justify-between items-center my-10">
-          <button className="bg-gray-700 p-4 text-white text-xs font-semibold">RETURN TO SHOP</button>
-          <button className="bg-gray-700 p-4 text-white text-xs font-semibold">UPDATE CART</button>
+          <Link to="/products">
+          <button className="bg-gray-700 p-4 text-white text-xs font-semibold">
+            RETURN TO SHOP
+          </button>
+          </Link>
+         
+          
         </div>
       </div>
 

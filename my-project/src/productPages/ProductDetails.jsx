@@ -3,7 +3,7 @@ import { Heart, Minus, Plus } from "lucide-react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import image from "../assets/cake10.jpg"; // fallback/related image
 
-const ProductDetail = ({count,setCount}) => {
+const ProductDetail = ({ count, setCount }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
@@ -14,6 +14,7 @@ const ProductDetail = ({count,setCount}) => {
     if (quantity > 1) setQuantity((prev) => prev - 1);
   };
 
+  // Fetch product data by ID
   useEffect(() => {
     const fetchProductById = async () => {
       try {
@@ -32,6 +33,7 @@ const ProductDetail = ({count,setCount}) => {
     if (id) fetchProductById();
   }, [id]);
 
+  // If product is loading
   if (!product) {
     return (
       <div className="mt-48 text-center text-gray-600 font-semibold">
@@ -42,57 +44,56 @@ const ProductDetail = ({count,setCount}) => {
 
   const isInStock = product.stock > 0;
 
+  // Handle Add to Cart action
+  const handleAddToCart = async (productId, quantity, price) => {
+    if (quantity > product.quantity) {
+      alert("Insufficient stock available.");
+      return;
+    }
 
-  const handleAddToCart = async (productId,quantity, price) => {
     const userId = localStorage.getItem("userId");
-    setCount((count)=>count+1);
-    console.log(count);
-   
- 
-  
+    setCount((prevCount) => prevCount + 1); // Update cart count
+
     if (!userId) {
       alert("User not logged in.");
       return;
     }
-  
+
     try {
       const response = await fetch("http://localhost:5000/api/cart/add", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          
           productId,
           userId,
           quantity,
-          price
-        })
+          price,
+        }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         alert("Item added to cart!");
-        navigate("/checkout")
+        navigate("/checkout");
         console.log("Cart item ID:", data.id);
       } else {
         alert(data.message || "Failed to add item to cart.");
       }
-  
     } catch (error) {
       console.error("Error adding to cart:", error);
       alert("An error occurred while adding item to cart.");
     }
   };
-  
 
   return (
     <div className="mt-48">
       <div className="mx-10 md:mx-36">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* Product Image */}
-          <div className="w-full flex flex-col gap-5">
+          <div className="w-[500px] flex flex-col gap-5">
             <img
               src={`http://localhost:5000${product.imageUrl}`}
               alt={product.name}
@@ -139,7 +140,11 @@ const ProductDetail = ({count,setCount}) => {
             {/* Stock Status */}
             <p>
               Availability:
-              <span className={`ml-2 font-medium ${isInStock ? "text-pink-500" : "text-red-500"}`}>
+              <span
+                className={`ml-2 font-medium ${
+                  isInStock ? "text-pink-500" : "text-red-500"
+                }`}
+              >
                 {isInStock ? "In Stock" : "Out of Stock"}
               </span>
             </p>
@@ -169,19 +174,17 @@ const ProductDetail = ({count,setCount}) => {
                 </button>
               </div>
 
-              
-                <button
-                  disabled={!isInStock}
-                  onClick={()=>handleAddToCart(product.id,quantity,product.price)}
-                  className={`px-6 py-2 text-sm font-bold rounded ${
-                    isInStock
-                      ? "bg-gray-700 hover:bg-gray-800 text-white"
-                      : "bg-gray-400 text-white cursor-not-allowed"
-                  }`}
-                >
-                  ADD TO CART
-                </button>
-              
+              <button
+                disabled={!isInStock}
+                onClick={() => handleAddToCart(product.id, quantity, product.price)}
+                className={`px-6 py-2 text-sm font-bold rounded ${
+                  isInStock
+                    ? "bg-gray-700 hover:bg-gray-800 text-white"
+                    : "bg-gray-400 text-white cursor-not-allowed"
+                }`}
+              >
+                ADD TO CART
+              </button>
             </div>
 
             {/* Description Section */}
@@ -198,7 +201,11 @@ const ProductDetail = ({count,setCount}) => {
             Related Items
           </h1>
           <div className="w-72 mt-10 shadow-md hover:shadow-lg transition rounded-lg overflow-hidden">
-            <img src={image} className="w-full h-48 object-cover" alt="Related Item" />
+            <img
+              src={image}
+              className="w-full h-48 object-cover"
+              alt="Related Item"
+            />
             <div className="p-4">
               <h3 className="text-lg font-semibold">Aspen Wardrobe</h3>
               <p className="text-gray-500">Rs 1234</p>

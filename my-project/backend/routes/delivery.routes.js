@@ -4,7 +4,9 @@ const {
   getAllShipping,
   getOrderById,
   getShippingById,
+  updateDeliveryDate,
   updateShippingById,
+  updateDeliveryStatus,
   deleteShippingById
 } = require("../controller/delivery.controller");
 
@@ -21,8 +23,12 @@ router.get("/getByOrderId/:orderId",getOrderById);
 // Get a shipping entry by ID
 router.get("/:id", getShippingById);
 
+router.put('/updateDate/:orderId', updateDeliveryDate);
+
 // Update a shipping entry by ID
 router.put("/:id", updateShippingById);
+
+router.put("/updateStatus/:shippingId",updateDeliveryStatus);
 
 // Delete a shipping entry by ID
 router.delete("/:id", deleteShippingById);

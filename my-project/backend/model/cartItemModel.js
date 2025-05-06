@@ -1,7 +1,7 @@
 const { connection } = require("../db/ConnectMysql");
 
 const createCartItemsTable = () => {
-  const query = `
+  const createTableQuery = `
     CREATE TABLE IF NOT EXISTS cart_items (
       id INT AUTO_INCREMENT PRIMARY KEY,
       userId VARCHAR(255) NOT NULL,
@@ -14,7 +14,7 @@ const createCartItemsTable = () => {
     );
   `;
 
-  connection.query(query, (err, result) => {
+  connection.query(createTableQuery, (err, result) => {
     if (err) {
       console.error("❌ Failed to create cart_items table:", err.message);
     } else {

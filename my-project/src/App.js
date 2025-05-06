@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+
 import Register from "./auth/Register";
 import Login from "./auth/Login";
 import Footer from "./common/Footer";
@@ -13,6 +14,9 @@ import CheckOut from "./productPages/CheckOut";
 import Billing from "./productPages/Billing";
 import Delivery from "./productPages/Delivery";
 import PickUp from "./productPages/PickUp";
+import OrderTrackUser from "./productPages/OrderTrackUser";
+import OrderDetailUser from "./productPages/OrderDetailUser";
+
 import AdminLayout from "./admin/AdminLayout";
 import AdminHome from "./admin/AdminHome";
 import Products from "./admin/Products";
@@ -22,59 +26,77 @@ import AddProduct from "./admin/AddProduct";
 import UpdateProduct from "./admin/UpdateProduct";
 import DeliveryCost from "./admin/DeliveryCost";
 import OrderDetails from "./admin/OrderDetails";
-import OrderTrackUser from "./productPages/OrderTrackUser";
-import OrderDetailUser from "./productPages/OrderDetailUser";
+import AdminLogin from "./admin/AdminLogin";
 
+import TrackLayout from "./Track/TrackLayout";
+import TrackHome from "./Track/TrackHome";
+import OrderDetail from "./Track/OrderDetail";
+import TrackerLogin from "./Track/TrackerLogin";
+import OrderFullDetail from "./Track/OrderFullDetail";
+
+import ProtectedRoute from "./admin/ProtectedRoute";
+import ProtectedTrackRoute from "./Track/ProtectedTrackRoute";
 const App = () => {
   const location = useLocation();
-  const [count,setCount]=useState(0)
+  const [count, setCount] = useState(0);
 
-  // Check if the current path starts with "/admin"
-  const isAdminRoute = location.pathname.startsWith("/admin");
+  const isAdminOrTrackingRoute =
+    location.pathname.startsWith("/admin") || location.pathname.startsWith("/track");
 
   return (
     <div className="bg-gradient-to-tr from-indigo-500/30 to-pink-500/30 min-h-screen">
-      {!isAdminRoute && <Navbar count={count} setcount={setCount} />}
+      {!isAdminOrTrackingRoute && <Navbar count={count} setcount={setCount} />}
 
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/products" element={<ProductListed />} />
-        <Route path="/productDetail/:id" element={<ProductDetail count={count} setCount={setCount} />} />
-        <Route path="/checkout" element={<CheckOut />} />
+        <Route
+          path="/productDetail/:id"
+          element={<ProductDetail count={count} setCount={setCount} />}
+        />
+        <Route path="/checkout" element={<CheckOut count={count} setCount={setCount} />} />
         <Route path="/billing" element={<Billing />} />
         <Route path="/delivery" element={<Delivery />} />
         <Route path="/pickup" element={<PickUp />} />
         <Route path="/trackuser" element={<OrderTrackUser />} />
         <Route path="/orderdetailUser/:orderId" element={<OrderDetailUser />} />
 
+        {/* Admin Login (Public) */}
+        <Route path="/admin/login" element={<AdminLogin />} />
 
-
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminHome />} />
-          <Route path="products" element={<Products />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="category" element={<AddCategory />} />
-          <Route path="addProduct" element={<AddProduct  />} />
-          <Route path="updateProduct/:id" element={<UpdateProduct />} />
-          <Route path="deliverycost" element={<DeliveryCost />} />
-          <Route path="orderdetails/:orderId" element={<OrderDetails />} />
-
-
-
-
-
-
-
-          
+        {/* Protected Admin Routes */}
+        <Route path="/admin" element={<ProtectedRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route index element={<AdminHome />} />
+            <Route path="products" element={<Products />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="category" element={<AddCategory />} />
+            <Route path="addProduct" element={<AddProduct />} />
+            <Route path="updateProduct/:id" element={<UpdateProduct />} />
+            <Route path="deliverycost" element={<DeliveryCost />} />
+            <Route path="orderdetails/:orderId" element={<OrderDetails />} />
+          </Route>
         </Route>
 
-        </Routes>
+        <Route path="/tracker/login" element={<TrackerLogin />} />
 
-      {!isAdminRoute && <Footer />}
+
+        {/* Tracking Routes */}
+        <Route path="/track" element={<ProtectedTrackRoute />}>
+  <Route element={<TrackLayout />}>
+    <Route index element={<TrackHome />} />
+    <Route path="orderdetail" element={<OrderDetail />} />
+    <Route path="orderfullDetail/:orderId" element={<OrderFullDetail />} />
+  </Route>
+</Route>
+      </Routes>
+
+      {!isAdminOrTrackingRoute && <Footer />}
     </div>
   );
 };
