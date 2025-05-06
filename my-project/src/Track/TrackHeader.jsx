@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Bell, PackageCheck } from "lucide-react";
+import { Bell, PackageCheck,LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const TrackHeader = () => {
   const [shippingList, setShippingList] = useState([]);
   const [notAcceptedOrders, setNotAcceptedOrders] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef(null);
+  const navigate=useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,6 +40,13 @@ const TrackHeader = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  
+  const handleLogout = () => {
+    localStorage.removeItem("trackerToken");
+    navigate("/tracker/login");
+  };
+  
 
   return (
     <header className="fixed w-full top-0 left-0 z-40 bg-gray-800 shadow-md px-4 md:px-6 py-4 flex justify-between items-center">
@@ -106,6 +115,10 @@ const TrackHeader = () => {
           alt="User"
           className="w-9 h-9 rounded-full border-2 border-yellow-400 object-cover shadow-md"
         />
+         <button className="hidden sm:flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1.5 rounded-md transition" onClick={handleLogout}>
+          <LogOut size={18} />
+          Logout
+        </button>
       </div>
     </header>
   );
