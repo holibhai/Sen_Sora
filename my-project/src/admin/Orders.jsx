@@ -65,7 +65,7 @@ const Orders = () => {
     };
 
     fetchOrders();
-  }, [orders]);
+  }, []);
 
   /*const filteredOrders = orders.filter((order) =>
     order.customer.toLowerCase().includes(searchTerm.toLowerCase())
