@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Bell, LogOut, Menu, Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AdminHeader = ({ onToggleSidebar }) => {
   const [orders, setOrders] = useState([]);
   const [pendingOrders, setPendingOrders] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef(null);
+  const navigate=useNavigate();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -40,6 +42,12 @@ const AdminHeader = ({ onToggleSidebar }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminToken");
+    navigate("/admin/login");
+  };
+  
 
   return (
     <header className="fixed w-full top-0 left-0 z-40 bg-gray-800 shadow-md px-4 md:px-6 py-4 flex justify-between items-center">
@@ -111,13 +119,13 @@ const AdminHeader = ({ onToggleSidebar }) => {
         />
 
         {/* Logout Button */}
-        <button className="hidden sm:flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1.5 rounded-md transition">
+        <button className="hidden sm:flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1.5 rounded-md transition" onClick={handleLogout}>
           <LogOut size={18} />
           Logout
         </button>
 
         {/* Mobile Logout Icon */}
-        <button className="sm:hidden p-2 bg-red-500 hover:bg-red-600 rounded-md text-white transition">
+        <button className="sm:hidden p-2 bg-red-500 hover:bg-red-600 rounded-md text-white transition" onClick={handleLogout}>
           <LogOut size={18} />
         </button>
       </div>
