@@ -25,7 +25,6 @@ const CheckOut = () => {
     fetchCartItems();
   }, []);
 
-  // Quantity change handlers
   const handleIncrease = async (index,cartId) => {
     console.log(cartId)
     const updatedData = [...pdata];
@@ -37,7 +36,7 @@ const CheckOut = () => {
       });
 
       if (res.ok) {
-        // Successfully updated quantity on backend
+  
       } else {
         console.error("Failed to increase quantity");
       }
@@ -45,6 +44,41 @@ const CheckOut = () => {
       console.error("Error increasing quantity:", error);
     }
   };
+
+    
+    const handleCheckout = async () => {
+      const stripe=await loadStripe("")
+      const userId = localStorage.getItem("userId");  
+      const orderData = {
+        userId: userId, 
+        items: pdata.map(item => ({
+          productId: item.id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      };
+      
+      try {
+        const response = await fetch("http://localhost:5000/api/orders", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(orderData),
+        });
+
+        if (response.ok) {
+          alert("Order placed successfully!");
+          // Optionally, clear the cart or redirect the user
+        } else {
+          alert("Failed to place the order.");
+        }
+      } catch (error) {
+        console.error("Error during checkout:", error);
+        alert("An error occurred during checkout.");
+      }
+    };
+      
 
   const handleDecrease = async (index,cartId) => {
     console.log(index);
@@ -149,14 +183,14 @@ const CheckOut = () => {
             <span className="text-gray-800">Rs.{orderTotal}</span>
           </div>
           <span>
-            <button className="text-right mt-10 bg-gray-700 px-9 py-3 text-white font-semibold text-sm">
-              <Link to="/billing">NEXT</Link>
+            <button className="text-right mt-10 bg-gray-700 px-9 py-3 text-white font-semibold text-sm" onClick={() =>handleCheckout()}>
+              Next
             </button>
           </span>
         </div>
       </div>
     </div>
   );
-};
 
+}
 export default CheckOut;

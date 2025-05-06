@@ -13,7 +13,7 @@
 //         setCategories(res.data); // This will update later
        
 //       })
-//       .catch((err) => console.error("Fetch error:", err));
+//       .catch((err) => console.error("Fetch error:", e2 gtrr));
 //   }, []);
 
 //   return (
