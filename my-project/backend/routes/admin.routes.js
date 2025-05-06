@@ -1,14 +1,23 @@
-const express=require("express")
-const { signup, login, logout } = require("../controller/admin.controller")
+const express = require("express");
+const router = express.Router();
 
+// Controller functions
+const {
+  signup,
+  login,
+  logout,
+} = require("../controller/admin.controller");
 
+// @route   POST /api/admin/signup
+// @desc    Register a new admin
+router.post("/signup", signup);
 
-const router=express.Router()
+// @route   POST /api/admin/login
+// @desc    Admin login
+router.post("/login", login);
 
+// @route   POST /api/admin/logout
+// @desc    Admin logout
+router.post("/logout", logout);
 
-router.post("/signup",signup)
-router.post("/login",login)
-router.post("/logout",logout)
-
-
-module.exports=router
+module.exports = router;
