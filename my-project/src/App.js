@@ -26,21 +26,20 @@ import AddProduct from "./admin/AddProduct";
 import UpdateProduct from "./admin/UpdateProduct";
 import DeliveryCost from "./admin/DeliveryCost";
 import OrderDetails from "./admin/OrderDetails";
+import AdminLogin from "./admin/AdminLogin";
 
 import TrackLayout from "./Track/TrackLayout";
 import TrackHome from "./Track/TrackHome";
 import OrderDetail from "./Track/OrderDetail";
 import OrderFullDetail from "./Track/OrderFullDetail";
 
+import ProtectedRoute from "./admin/ProtectedRoute";
 const App = () => {
   const location = useLocation();
   const [count, setCount] = useState(0);
 
-
-  // Check if the current path starts with "/admin" or "/tracking"
   const isAdminOrTrackingRoute =
-    location.pathname.startsWith("/admin") ||
-    location.pathname.startsWith("/track");
+    location.pathname.startsWith("/admin") || location.pathname.startsWith("/track");
 
   return (
     <div className="bg-gradient-to-tr from-indigo-500/30 to-pink-500/30 min-h-screen">
@@ -65,16 +64,21 @@ const App = () => {
         <Route path="/trackuser" element={<OrderTrackUser />} />
         <Route path="/orderdetailUser/:orderId" element={<OrderDetailUser />} />
 
-        {/* Admin Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminHome />} />
-          <Route path="products" element={<Products />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="category" element={<AddCategory />} />
-          <Route path="addProduct" element={<AddProduct />} />
-          <Route path="updateProduct/:id" element={<UpdateProduct />} />
-          <Route path="deliverycost" element={<DeliveryCost />} />
-          <Route path="orderdetails/:orderId" element={<OrderDetails />} />
+        {/* Admin Login (Public) */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        {/* Protected Admin Routes */}
+        <Route path="/admin" element={<ProtectedRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route index element={<AdminHome />} />
+            <Route path="products" element={<Products />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="category" element={<AddCategory />} />
+            <Route path="addProduct" element={<AddProduct />} />
+            <Route path="updateProduct/:id" element={<UpdateProduct />} />
+            <Route path="deliverycost" element={<DeliveryCost />} />
+            <Route path="orderdetails/:orderId" element={<OrderDetails />} />
+          </Route>
         </Route>
 
         {/* Tracking Routes */}
@@ -82,8 +86,6 @@ const App = () => {
           <Route index element={<TrackHome />} />
           <Route path="orderdetail" element={<OrderDetail />} />
           <Route path="orderfullDetail/:orderId" element={<OrderFullDetail />} />
-
-
         </Route>
       </Routes>
 
