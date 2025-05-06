@@ -31,9 +31,11 @@ import AdminLogin from "./admin/AdminLogin";
 import TrackLayout from "./Track/TrackLayout";
 import TrackHome from "./Track/TrackHome";
 import OrderDetail from "./Track/OrderDetail";
+import TrackerLogin from "./Track/TrackerLogin";
 import OrderFullDetail from "./Track/OrderFullDetail";
 
 import ProtectedRoute from "./admin/ProtectedRoute";
+import ProtectedTrackRoute from "./Track/ProtectedTrackRoute";
 const App = () => {
   const location = useLocation();
   const [count, setCount] = useState(0);
@@ -81,12 +83,17 @@ const App = () => {
           </Route>
         </Route>
 
+        <Route path="/tracker/login" element={<TrackerLogin />} />
+
+
         {/* Tracking Routes */}
-        <Route path="/track" element={<TrackLayout />}>
-          <Route index element={<TrackHome />} />
-          <Route path="orderdetail" element={<OrderDetail />} />
-          <Route path="orderfullDetail/:orderId" element={<OrderFullDetail />} />
-        </Route>
+        <Route path="/track" element={<ProtectedTrackRoute />}>
+  <Route element={<TrackLayout />}>
+    <Route index element={<TrackHome />} />
+    <Route path="orderdetail" element={<OrderDetail />} />
+    <Route path="orderfullDetail/:orderId" element={<OrderFullDetail />} />
+  </Route>
+</Route>
       </Routes>
 
       {!isAdminOrTrackingRoute && <Footer />}
