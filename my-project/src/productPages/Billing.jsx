@@ -54,7 +54,7 @@ const Billing = () => {
 
   const handleStripe = async () => {
     try {
-      const stripe = await loadStripe("pk_test_51RLzK4DBPjhydGB2EGG2SwUhN3QTQmkINMdP1LsCWxCi2i8iHV6E4zm7nCFvn9U8RUz2Oj3e2nIC6R8OGwydcZDL00TILxxyIs"); // Replace with actual Stripe publishable key
+      const stripe = await loadStripe("pk_test_51RLzK4DBPjhydGB2EGG2SwUhN3QTQmkINMdP1LsCWxCi2i8iHV6E4zm7nCFvn9U8RUz2Oj3e2nIC6R8OGwydcZDL00TILxxyIs");
 
       const products = cartItems.map((item) => ({
         name: item.productName,
@@ -65,10 +65,8 @@ const Billing = () => {
 
       const response = await fetch("http://localhost:5000/api/stripe/add", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ products })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ products }),
       });
 
       const data = await response.json();
@@ -82,7 +80,11 @@ const Billing = () => {
       if (result.error) {
         console.error("Stripe redirect error:", result.error.message);
         alert("Payment failed to start. Try again.");
+      } else {
+        // Success redirecting to checkout. Clear cart now.
+       
       }
+
     } catch (error) {
       console.error("Stripe error:", error);
       alert("Stripe checkout failed. Please try again.");
@@ -91,42 +93,40 @@ const Billing = () => {
 
   const handleOrder = async (e) => {
     e.preventDefault();
-
     if (!validateFormData()) return;
 
     const today = new Date();
-    const newdate = today.toISOString().split('T')[0];
+    const date = today.toISOString().split('T')[0];
 
     const orderData = {
-      userId: userId,
+      userId,
       totalProducts: cartItems.length,
-      total: total,
+      total,
       status: "pending",
-      date: newdate
+      date,
     };
 
     try {
-      // Step 1: Create the Order
-      const orderResponse = await fetch('http://localhost:5000/api/order/add', {
+      // 1. Create Order
+      const orderRes = await fetch('http://localhost:5000/api/order/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData),
       });
 
-      if (!orderResponse.ok) throw new Error("Failed to create order");
+      if (!orderRes.ok) throw new Error("Order creation failed");
 
-      const orderDataResponse = await orderResponse.json();
-      const createdOrderId = orderDataResponse.orderId;
+      const orderResData = await orderRes.json();
+      const createdOrderId = orderResData.orderId;
       setOrderId(createdOrderId);
-      alert("Order successfully created!");
 
-      // Step 2: Create Order Items
+      // 2. Create Order Items
       const orderItems = cartItems.map((item) => ({
         orderId: createdOrderId,
         productId: item.productId,
         quantity: item.quantity,
         price: item.price,
-        userId: userId,
+        userId,
       }));
 
       await Promise.all(
@@ -140,19 +140,17 @@ const Billing = () => {
           if (!res.ok) {
             const errorText = await res.text();
             console.error("Failed to add order item:", errorText);
-            throw new Error("One or more order items failed.");
+            throw new Error("Order item error");
           }
 
           return res.json();
         })
       );
 
-      alert("All items added to the order!");
-
-      // Step 3: Submit Delivery Info
+      // 3. Submit Delivery Info
       const deliveryPayload = {
         ...formData,
-        userId: userId,
+        userId,
         orderId: createdOrderId,
       };
 
@@ -164,12 +162,13 @@ const Billing = () => {
 
       if (!deliveryRes.ok) {
         const deliveryError = await deliveryRes.text();
-        console.error("Delivery submission error:", deliveryError);
-        throw new Error("Failed to submit delivery details");
+        console.error("Delivery error:", deliveryError);
+        throw new Error("Failed to submit delivery");
       }
 
-      alert("Delivery details saved successfully!");
-      handleStripe();
+      // 4. Proceed to Stripe
+      await handleStripe();
+
     } catch (error) {
       console.error("Order submission failed:", error);
       alert("There was an error placing the order. Please try again.");
