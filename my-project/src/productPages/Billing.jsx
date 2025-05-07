@@ -3,6 +3,7 @@ import Delivery from './Delivery';
 import image from "../assets/Brown Minimalist Chocolate Cake Food Instagram Post.jpg";
 import botImage from "../assets/Indulge Your.jpg";
 import { Link } from 'react-router-dom';
+import { loadStripe } from '@stripe/stripe-js';
 
 const Billing = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -49,6 +50,43 @@ const Billing = () => {
       }
     }
     return true;
+  };
+
+  const handleStripe = async () => {
+    try {
+      const stripe = await loadStripe("pk_test_51RLzK4DBPjhydGB2EGG2SwUhN3QTQmkINMdP1LsCWxCi2i8iHV6E4zm7nCFvn9U8RUz2Oj3e2nIC6R8OGwydcZDL00TILxxyIs"); // Replace with actual Stripe publishable key
+
+      const products = cartItems.map((item) => ({
+        name: item.productName,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image || "https://via.placeholder.com/150",
+      }));
+
+      const response = await fetch("http://localhost:5000/api/stripe/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ products })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.id) {
+        throw new Error("Stripe session creation failed.");
+      }
+
+      const result = await stripe.redirectToCheckout({ sessionId: data.id });
+
+      if (result.error) {
+        console.error("Stripe redirect error:", result.error.message);
+        alert("Payment failed to start. Try again.");
+      }
+    } catch (error) {
+      console.error("Stripe error:", error);
+      alert("Stripe checkout failed. Please try again.");
+    }
   };
 
   const handleOrder = async (e) => {
@@ -131,6 +169,7 @@ const Billing = () => {
       }
 
       alert("Delivery details saved successfully!");
+      handleStripe();
     } catch (error) {
       console.error("Order submission failed:", error);
       alert("There was an error placing the order. Please try again.");
