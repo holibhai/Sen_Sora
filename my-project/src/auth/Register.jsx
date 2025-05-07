@@ -41,6 +41,7 @@ const Register = () => {
 
       const data = await response.json();
       alert(data.message || "Registration successful!");
+      navigate("/login")
     } catch (error) {
       console.log(error.message);
       console.error("Error:", error);
