@@ -25,7 +25,7 @@ router.put('/decrement/:id',decrementQuantity);
 router.delete('/:id',removeFromCart);
 
 // Clear user's cart
-router.delete('/clear', clearCart);
+router.delete('/clear/:userId', clearCart);
 
 // Checkout cart and create order
 router.post('/checkout', checkout);
