@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Minus, Plus, Trash } from "lucide-react";
 import sideImage from "../assets/cake11.jpg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CheckOut = ({count,setCount}) => {
   const [pdata, setPdata] = useState([]);
+  const navigate=useNavigate();
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -77,6 +78,11 @@ const CheckOut = ({count,setCount}) => {
   const calculateSubtotal = (item) => item.price * item.quantity;
   const orderTotal = pdata.reduce((sum, item) => sum + calculateSubtotal(item), 0);
 
+
+  const handleCheckout=()=>{
+      navigate("/billing")
+  }
+  
   return (
     <div className="mt-48 mx-6 md:mx-12 lg:mx-24">
       <div className="overflow-x-auto">
@@ -170,11 +176,11 @@ const CheckOut = ({count,setCount}) => {
             <button className="text-right mt-10 bg-gray-700 px-9 py-3 text-white font-semibold text-sm" onClick={() =>handleCheckout()}>
               Next
             </button>
-          </span>
+          </span> 
         </div>
       </div>
     </div>
   );
-
+  
 }
 export default CheckOut;
