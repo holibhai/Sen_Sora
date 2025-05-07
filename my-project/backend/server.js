@@ -11,7 +11,7 @@ const categoryRoutes = require("./routes/category.routes");
 const cartRoutes=require("./routes/cartItem.routes");
 const deliveryCostRoutes=require("./routes/deliveyCost.routes");
 const orderRoutes=require("./routes/order.routes");
-const stripeRoutes=require("./routes/stripe.routes")
+const stripeRoutes=require("./routes/stipe.routes")
 const orderItemRoutes=require("./routes/orderItem.routes");
 const deliveryRoutes=require("./routes/delivery.routes");
 const { createUsersTable } = require("./model/userModel");
@@ -48,7 +48,7 @@ app.use(express.json()); // to parse the incoming requests with JSON payloads (f
 app.use(cookieParser());
 app.use('/uploads', express.static('uploads'));
 
-app.use("./api/stripe", stripeRoutes);
+app.use("/api/stripe", stripeRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin",adminRoutes);
 app.use("/api/products",productRoutes)
