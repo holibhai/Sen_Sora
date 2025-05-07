@@ -36,6 +36,8 @@ import OrderFullDetail from "./Track/OrderFullDetail";
 
 import ProtectedRoute from "./admin/ProtectedRoute";
 import ProtectedTrackRoute from "./Track/ProtectedTrackRoute";
+import Success from "./payment/Success";
+import Failure from "./payment/Failure";
 const App = () => {
   const location = useLocation();
   const [count, setCount] = useState(0);
@@ -65,6 +67,10 @@ const App = () => {
         <Route path="/pickup" element={<PickUp />} />
         <Route path="/trackuser" element={<OrderTrackUser />} />
         <Route path="/orderdetailUser/:orderId" element={<OrderDetailUser />} />
+        <Route path="/success" element={<Success count={count} setcount={setCount} />} />
+        <Route path="/failure" element={<Failure />} />
+
+
 
         {/* Admin Login (Public) */}
         <Route path="/admin/login" element={<AdminLogin />} />
