@@ -1,30 +1,35 @@
-
 const express = require('express');
-const app = express();
-const Stripe = require('stripe');
-const stripe=Stripe(process.env.STRIPE_KEY)
 const router = express.Router();
+const Stripe = require('stripe');
+require('dotenv').config(); // Load environment variables
 
-app.post('/create-checkout-session', async (req, res) => {
-  const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: 'T-shirt',
+const stripe = new Stripe(process.env.STRIPE_KEY); // Correct initialization
+
+router.post('/create-checkout-session', async (req, res) => {
+  try {
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'T-shirt',
+            },
+            unit_amount: 2000, // $20.00 in cents
           },
-          unit_amount: 2000,
+          quantity: 1,
         },
-        quantity: 1,
-      },
-    ],
-    mode: 'payment',
-    success_url: '${process.env.FRONTEND_URL}/success',
-    cancel_url: '${process.env.FRONTEND_URL}/cart',
-  });
+      ],
+      mode: 'payment',
+      success_url: `${process.env.FRONTEND_URL}/success`, // ✅ Fixed template string
+      cancel_url: `${process.env.FRONTEND_URL}/cart`,
+    });
 
-  res.send({url: session.url});
-}       
-);
+    res.send({ url: session.url });
+  } catch (error) {
+    console.error('Stripe Error:', error);
+    res.status(500).send({ error: 'Something went wrong while creating the session' });
+  }
+});
+
 module.exports = router;
