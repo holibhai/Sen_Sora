@@ -94,13 +94,13 @@ const App = () => {
 
         {/* Tracking Routes */}
         <Route path="/track" element={<ProtectedTrackRoute />}>
-  <Route element={<TrackLayout />}>
-    <Route index element={<TrackHome />} />
-    <Route path="orderdetail" element={<OrderDetail />} />
-    <Route path="orderfullDetail/:orderId" element={<OrderFullDetail />} />
-  </Route>
-</Route>
-      </Routes>
+             <Route element={<TrackLayout />}>
+             <Route index element={<TrackHome />} />
+             <Route path="orderdetail" element={<OrderDetail />} />
+             <Route path="orderfullDetail/:orderId" element={<OrderFullDetail />} />
+        </Route>
+    </Route>
+ </Routes>
 
       {!isAdminOrTrackingRoute && <Footer />}
     </div>
