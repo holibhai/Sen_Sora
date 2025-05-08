@@ -199,16 +199,21 @@ exports.removeFromCart = (req, res) => {
 };
 
 // Clear user's cart
-exports.clearCart = async (req, res) => {
-  try {
-    const userId = req.user._id;
-    await CartItem.deleteMany({ userId });
-    
+exports.clearCart = (req, res) => {
+  const userId = req.params.userId; // assuming you're passing userId as a route param
+
+  const query = 'DELETE FROM cart_items WHERE userId = ?';
+
+  connection.query(query, [userId], (err, result) => {
+    if (err) {
+      console.error('Error clearing cart:', err);
+      return res.status(500).json({ message: 'Server error' });
+    }
+
     res.status(200).json({ message: 'Cart cleared successfully' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  });
 };
+
 
 // Checkout cart and create order
 exports.checkout = async (req, res) => {
