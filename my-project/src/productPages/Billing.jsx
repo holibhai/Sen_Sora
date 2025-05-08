@@ -55,49 +55,50 @@ const Billing = () => {
   const handleStripe = async () => {
     try {
       const stripe = await loadStripe("pk_test_51RLzK4DBPjhydGB2EGG2SwUhN3QTQmkINMdP1LsCWxCi2i8iHV6E4zm7nCFvn9U8RUz2Oj3e2nIC6R8OGwydcZDL00TILxxyIs");
-  
+
+      const conversionRate = 308; // 1 USD = 320 LKR (adjust based on live rate)
+
       const products = cartItems.map((item) => ({
         name: item.productName,
-        price: item.price,
+        price: parseFloat((item.price / conversionRate).toFixed(2)), // convert LKR to USD
         quantity: item.quantity,
         image: item.image || "https://via.placeholder.com/150",
       }));
-  
-      // Add shipping as a separate product line item
+
       if (shippingCost > 0) {
         products.push({
           name: `Shipping (${selectedCity})`,
-          price: Number(shippingCost),
+          price: parseFloat((Number(shippingCost) / conversionRate).toFixed(2)),
           quantity: 1,
-          image: "https://via.placeholder.com/150", // Optional placeholder
+          image: "https://via.placeholder.com/150",
         });
       }
-  
+
       const response = await fetch("http://localhost:5000/api/stripe/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ products }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok || !data.id) {
         throw new Error("Stripe session creation failed.");
       }
-  
+
       const result = await stripe.redirectToCheckout({ sessionId: data.id });
-  
+
       if (result.error) {
         console.error("Stripe redirect error:", result.error.message);
         alert("Payment failed to start. Try again.");
       }
-  
+
     } catch (error) {
       console.error("Stripe error:", error);
       alert("Stripe checkout failed. Please try again.");
     }
   };
-  
+
   const handleOrder = async (e) => {
     e.preventDefault();
     if (!validateFormData()) return;
@@ -114,7 +115,6 @@ const Billing = () => {
     };
 
     try {
-      // 1. Create Order
       const orderRes = await fetch('http://localhost:5000/api/order/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -127,7 +127,6 @@ const Billing = () => {
       const createdOrderId = orderResData.orderId;
       setOrderId(createdOrderId);
 
-      // 2. Create Order Items
       const orderItems = cartItems.map((item) => ({
         orderId: createdOrderId,
         productId: item.productId,
@@ -154,7 +153,6 @@ const Billing = () => {
         })
       );
 
-      // 3. Submit Delivery Info
       const deliveryPayload = {
         ...formData,
         userId,
@@ -173,7 +171,6 @@ const Billing = () => {
         throw new Error("Failed to submit delivery");
       }
 
-      // 4. Proceed to Stripe
       await handleStripe();
 
     } catch (error) {
