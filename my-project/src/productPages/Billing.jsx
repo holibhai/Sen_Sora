@@ -55,42 +55,49 @@ const Billing = () => {
   const handleStripe = async () => {
     try {
       const stripe = await loadStripe("pk_test_51RLzK4DBPjhydGB2EGG2SwUhN3QTQmkINMdP1LsCWxCi2i8iHV6E4zm7nCFvn9U8RUz2Oj3e2nIC6R8OGwydcZDL00TILxxyIs");
-
+  
       const products = cartItems.map((item) => ({
         name: item.productName,
         price: item.price,
         quantity: item.quantity,
         image: item.image || "https://via.placeholder.com/150",
       }));
-
+  
+      // Add shipping as a separate product line item
+      if (shippingCost > 0) {
+        products.push({
+          name: `Shipping (${selectedCity})`,
+          price: Number(shippingCost),
+          quantity: 1,
+          image: "https://via.placeholder.com/150", // Optional placeholder
+        });
+      }
+  
       const response = await fetch("http://localhost:5000/api/stripe/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ products }),
       });
-
+  
       const data = await response.json();
-
+  
       if (!response.ok || !data.id) {
         throw new Error("Stripe session creation failed.");
       }
-
+  
       const result = await stripe.redirectToCheckout({ sessionId: data.id });
-
+  
       if (result.error) {
         console.error("Stripe redirect error:", result.error.message);
         alert("Payment failed to start. Try again.");
-      } else {
-        // Success redirecting to checkout. Clear cart now.
-       
       }
-
+  
     } catch (error) {
       console.error("Stripe error:", error);
       alert("Stripe checkout failed. Please try again.");
     }
   };
-
+  
   const handleOrder = async (e) => {
     e.preventDefault();
     if (!validateFormData()) return;
