@@ -6,10 +6,10 @@ import cake4 from "../../assets/cake4.jpg";
 
 // Sample Product List
 const latestProducts = [
-  { id: 1, name: "Armado Chair", image: cake1 },
-  { id: 2, name: "Elegant Orange Chair", image: cake2 },
-  { id: 3, name: "Modern Gray Chair", image: cake3 }, // Reusing the same image
-  { id: 4, name: "Luxury Black Chair", image: cake4 },
+  { id: 1, name: "Armado Cake", image: cake1 },
+  { id: 2, name: "Elegant Orange cake", image: cake2 },
+  { id: 3, name: "Miror Cake", image: cake3 }, // Reusing the same image
+  { id: 4, name: "winto sero", image: cake4 },
   // Reusing the same image
 ];
 

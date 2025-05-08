@@ -18,7 +18,7 @@ const TrackSidebar = () => {
 
   const navLinks = [
     { to: "/track", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
-    { to: "/track/orderdetail", label: "Orders", icon: <ListOrdered size={18} /> },
+    { to: "/track/orderdetail", label: "shipping orders", icon: <ListOrdered size={18} /> },
     { to: "/track/users", label: "Users", icon: <UserRound size={18} /> },
     { to: "/track/employees", label: "Employees", icon: <Users2 size={18} /> },
   ];

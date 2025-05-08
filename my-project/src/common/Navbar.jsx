@@ -14,11 +14,14 @@ const Navbar = ({ count, setCount }) => {
   const [changedOrders, setChangedOrders] = useState([]);
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
   const previousStatuses = useRef({});
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("userId"));
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const userId = localStorage.getItem("userId");
+        if (!userId) return;
+
         const response = await fetch(`http://localhost:5000/api/order/getByUserId/${userId}`);
         if (!response.ok) throw new Error("Failed to fetch user orders");
         const data = await response.json();
@@ -45,13 +48,16 @@ const Navbar = ({ count, setCount }) => {
 
     const interval = setInterval(fetchOrders, 5000);
     fetchOrders();
-
     return () => clearInterval(interval);
   }, []);
 
   const handleNotificationClick = () => {
+    if (!isLoggedIn) {
+      alert("Please log in to view notifications.");
+      return navigate("/login");
+    }
     setShowNotificationDropdown(!showNotificationDropdown);
-    setNewStatusUpdate(false); // Clear red dot
+    setNewStatusUpdate(false);
   };
 
   const [categories, setCategories] = useState([
@@ -60,8 +66,6 @@ const Navbar = ({ count, setCount }) => {
   ]);
 
   let closeTimeout;
-
-  const handleRoute = () => navigate("/products");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,6 +102,8 @@ const Navbar = ({ count, setCount }) => {
     const fetchCartItems = async () => {
       try {
         const userId = localStorage.getItem("userId");
+        if (!userId) return;
+
         const response = await fetch(`http://localhost:5000/api/cart/${userId}`);
         const data = await response.json();
         setPData(data);
@@ -108,6 +114,20 @@ const Navbar = ({ count, setCount }) => {
 
     fetchCartItems();
   }, [count]);
+
+  const handleSignOut = () => {
+    localStorage.removeItem("userId");
+    setIsLoggedIn(false);
+    navigate("/login");
+  };
+
+  const handleProtectedRoute = (route) => {
+    if (!isLoggedIn) {
+      alert("Please log in to access this feature.");
+      return navigate("/login");
+    }
+    navigate(route);
+  };
 
   return (
     <>
@@ -123,9 +143,18 @@ const Navbar = ({ count, setCount }) => {
               {isMenuOpen ? <HiX className="h-6 w-6" /> : <HiMenu className="h-6 w-6" />}
             </button>
 
-            <button className="hidden md:block bg-pink-600 text-white px-6 py-2.5 rounded-lg hover:bg-pink-700 text-sm font-medium transition-all hover:shadow-lg">
-              <Link to="/login">Sign in</Link>
-            </button>
+            {isLoggedIn ? (
+              <button
+                className="hidden md:block bg-pink-600 text-white px-6 py-2.5 rounded-lg hover:bg-pink-700 text-sm font-medium transition-all hover:shadow-lg"
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </button>
+            ) : (
+              <button className="hidden md:block bg-pink-600 text-white px-6 py-2.5 rounded-lg hover:bg-pink-700 text-sm font-medium transition-all hover:shadow-lg">
+                <Link to="/login">Sign In</Link>
+              </button>
+            )}
           </div>
 
           <div className="relative">
@@ -152,15 +181,9 @@ const Navbar = ({ count, setCount }) => {
                       </button>
                     </div>
                   ))}
-                  <div className="px-4 py-2 text-neutral-700 font-semibold rounded-lg hover:text-indigo-500 cursor-pointer">
-                    <Link to="/">Home</Link>
-                  </div>
-                  <div className="px-4 py-2 text-neutral-700 font-semibold rounded-lg hover:text-indigo-500 cursor-pointer">
-                    <Link to="/contact">Contact</Link>
-                  </div>
-                  <div className="px-4 py-2 text-neutral-700 font-semibold rounded-lg hover:text-indigo-500 cursor-pointer">
-                    <Link to="/about">About</Link>
-                  </div>
+                  <Link to="/" className="px-4 py-2 text-neutral-700 font-semibold hover:text-indigo-500">Home</Link>
+                  <Link to="/contact" className="px-4 py-2 text-neutral-700 font-semibold hover:text-indigo-500">Contact</Link>
+                  <Link to="/about" className="px-4 py-2 text-neutral-700 font-semibold hover:text-indigo-500">About</Link>
                 </div>
 
                 <div className="relative w-full md:w-1/4">
@@ -173,19 +196,19 @@ const Navbar = ({ count, setCount }) => {
                 </div>
 
                 <div className="flex items-center space-x-5">
-                  <Link to="/trackuser">
-                    <FaUser className="text-gray-700 text-xl cursor-pointer hover:text-blue-500" />
-                  </Link>
-                  <Link to="/checkout" className="relative inline-block">
+                  <FaUser
+                    className="text-gray-700 text-xl cursor-pointer hover:text-blue-500"
+                    onClick={() => handleProtectedRoute("/trackuser")}
+                  />
+                  <div className="relative inline-block" onClick={() => handleProtectedRoute("/checkout")}>
                     <FaShoppingCart className="text-gray-700 text-2xl cursor-pointer hover:text-green-500" />
                     {pdata.length > 0 && (
                       <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold w-5 h-5 flex items-center justify-center rounded-full shadow-md">
                         {pdata.length}
                       </span>
                     )}
-                  </Link>
+                  </div>
 
-                  {/* 🔔 Notification Bell */}
                   <div className="relative cursor-pointer" onClick={handleNotificationClick}>
                     <FaBell className="text-gray-700 text-xl hover:text-yellow-500" />
                     {newStatusUpdate && (
@@ -193,8 +216,6 @@ const Navbar = ({ count, setCount }) => {
                         !
                       </span>
                     )}
-
-                    {/* Dropdown message */}
                     {showNotificationDropdown && changedOrders.length > 0 && (
                       <div className="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-lg shadow-lg z-50 p-3">
                         <h3 className="font-semibold text-sm text-gray-700 mb-2">Order Updates:</h3>
@@ -212,7 +233,6 @@ const Navbar = ({ count, setCount }) => {
               </div>
             </nav>
 
-            {/* Dropdown */}
             {hoveredCategory !== null && (
               <div
                 className="absolute h-[300px] px-12 left-0 w-screen border-t flex transition-opacity duration-200"
@@ -233,7 +253,7 @@ const Navbar = ({ count, setCount }) => {
                       {categories[hoveredCategory]?.subcategories.map((sub, i) => (
                         <li
                           key={i}
-                          className="px-4 py-2 text-white cursor-pointer"
+                          className="px-4 py-2 text-white cursor-pointer hover:text-rose-400"
                           onClick={() => handleSubCategory(sub)}
                         >
                           {sub}

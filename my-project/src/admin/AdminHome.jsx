@@ -34,12 +34,7 @@ const AdminHome = () => {
       icon: <DollarSign size={24} className="text-white" />,
       gradient: "from-yellow-400 to-yellow-600",
     },
-    {
-      title: "Customers",
-      value: customerCount,
-      icon: <Users size={24} className="text-white" />,
-      gradient: "from-blue-500 to-blue-700",
-    },
+     
   ];
 
   useEffect(() => {
@@ -106,7 +101,6 @@ const AdminHome = () => {
             <thead>
               <tr className="text-gray-500 border-b">
                 <th className="py-2">Order ID</th>
-                <th className="py-2">Customer</th>
                 <th className="py-2">Status</th>
                 <th className="py-2">Total</th>
               </tr>
@@ -120,7 +114,6 @@ const AdminHome = () => {
                   } hover:bg-gray-100 transition`}
                 >
                   <td className="py-2 px-2">{order._id || `ORD-${index + 1}`}</td>
-                  <td className="py-2 px-2">{order.customerName || "N/A"}</td>
                   <td
                     className={`py-2 px-2 font-medium ${
                       order.status === "Completed"

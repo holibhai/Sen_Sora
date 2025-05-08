@@ -167,15 +167,7 @@ const Delivery = ({ onShippingCostChange, onCityChange, formData, setFormData })
           </div>
 
           <div className="flex flex-col gap-3">
-            <label className="text-gray-500">Checking Shipping Cost</label>
-            <button
-              type="button"
-              className="bg-gray-600 py-3 text-white font-semibold"
-              onClick={() => handleCheckShippingCost(formData.city)}
-            >
-              CHECK SHIPPING COST
-            </button>
-
+            
             {error && (
               <p className="text-red-500 font-medium text-sm">{error}</p>
             )}

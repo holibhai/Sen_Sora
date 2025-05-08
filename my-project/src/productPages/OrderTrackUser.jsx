@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { CheckCircle, Clock, XCircle, Search, Eye, Truck, PackageSearch, PackageCheck } from "lucide-react";
+import {
+  CheckCircle,
+  Clock,
+  XCircle,
+  Search,
+  Eye,
+  Truck,
+  PackageSearch,
+  PackageCheck,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const getStatusBadge = (status) => {
@@ -52,13 +61,36 @@ const OrderTrackUser = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
+      setLoading(true);
+      setError("");
+
       try {
         const userId = localStorage.getItem("userId");
-        const response = await fetch(`http://localhost:5000/api/order/getByUserId/${userId}`);
-        if (!response.ok) throw new Error("Failed to fetch user orders");
+
+        if (!userId) {
+          throw new Error("User ID not found in localStorage.");
+        }
+
+        const response = await fetch(
+          `http://localhost:5000/api/order/getByUserId/${userId}`
+        );
+
+        if (!response.ok) {
+          const errorData = await response.text();
+          console.error("Fetch error:", errorData);
+          throw new Error("Failed to fetch user orders.");
+        }
+
         const data = await response.json();
+        console.log("Fetched orders:", data);
+
+        if (!Array.isArray(data)) {
+          throw new Error("Unexpected response format. Expected an array.");
+        }
+
         setOrders(data);
       } catch (err) {
+        console.error("Error fetching orders:", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -69,29 +101,30 @@ const OrderTrackUser = () => {
   }, []);
 
   const filteredOrders = orders.filter((order) =>
-    order.orderId.toLowerCase().includes(searchTerm.toLowerCase())
+    order.orderId?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const statusCount = (status) => orders.filter((order) => order.status === status).length;
+  const statusCount = (status) =>
+    orders.filter((order) => order.status === status).length;
 
   if (loading) {
     return (
       <div className="p-6 min-h-screen flex items-center justify-center text-xl">
-        Loading your orders...
+        <span className="text-gray-600 animate-pulse">Loading your orders...</span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-6 min-h-screen flex items-center justify-center text-red-500 text-xl">
-        {error}
+      <div className="p-6 min-h-screen flex items-center justify-center text-red-600 text-xl font-semibold">
+        Error: {error}
       </div>
     );
   }
 
   return (
-    <div className="p-6 w-full min-h-screen pt-44 px-44">
+    <div className="p-6 w-full min-h-screen pt-44 px-4 md:px-44">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Your Orders</h1>
         <div className="relative">
@@ -106,9 +139,9 @@ const OrderTrackUser = () => {
         </div>
       </div>
 
-      {/* Order Summary Cards */}
+      {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white shadow-lg rounded-lg  p-4 flex items-center gap-4">
+        <div className="bg-white shadow-md rounded-lg p-4 flex items-center gap-4">
           <PackageSearch className="text-yellow-500" size={32} />
           <div>
             <p className="text-gray-500 text-sm">Total Orders</p>
@@ -144,26 +177,31 @@ const OrderTrackUser = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.map((order, index) => (
-              <tr
-                key={index}
-                className={`border-b ${index % 2 === 0 ? "bg-gray-300" : "bg-gray-200"}`}
-              >
-                <td className="px-6 py-4 font-medium">{order.orderId}</td>
-                <td className="px-6 py-4">{order.date}</td>
-                <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
-                <td className="px-6 py-4 font-semibold">Rs.{order.total}</td>
-                <td className="px-6 py-4 text-center">
-                  <button
-                    onClick={() => navigate(`/orderdetailUser/${order.orderId}`)}
-                    className="flex items-center gap-1 text-sm text-black px-3 py-1 rounded hover:underline"
-                  >
-                    <Eye size={16} /> View
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {filteredOrders.length === 0 && (
+            {filteredOrders.length > 0 ? (
+              filteredOrders.map((order, index) => (
+                <tr
+                  key={index}
+                  className={`border-b ${
+                    index % 2 === 0 ? "bg-gray-300" : "bg-gray-200"
+                  }`}
+                >
+                  <td className="px-6 py-4 font-medium">{order.orderId}</td>
+                  <td className="px-6 py-4">{order.date}</td>
+                  <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
+                  <td className="px-6 py-4 font-semibold">Rs.{order.total}</td>
+                  <td className="px-6 py-4 text-center">
+                    <button
+                      onClick={() =>
+                        navigate(`/orderdetailUser/${order.orderId}`)
+                      }
+                      className="flex items-center gap-1 text-sm text-black px-3 py-1 rounded hover:underline"
+                    >
+                      <Eye size={16} /> View
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
               <tr>
                 <td colSpan="5" className="text-center py-6 text-gray-500">
                   No orders found.

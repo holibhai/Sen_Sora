@@ -33,6 +33,7 @@ const Login = () => {
       localStorage.setItem("userToken",data.token);
       localStorage.setItem("userId",data.user.userId);
       alert(data.message || 'Login successful!');
+      navigate("/");
     } catch (error) {
       console.error('Error:', error);
       alert('Login failed. Please try again.');
