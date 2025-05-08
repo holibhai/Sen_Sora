@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Cake,
   Gift,
@@ -9,45 +9,72 @@ import {
 } from "lucide-react";
 
 const AdminHome = () => {
-  // Sample data                           
+  const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
+
+  const totalRevenue = orders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
+  const customerCount = 98;
+
   const stats = [
     {
       title: "Total Products",
-      value: "132",
-      icon: <PackageCheck size={24} className="text-purple-600" />,
+      value: products.length,
+      icon: <PackageCheck size={24} className="text-white" />,
+      gradient: "from-purple-500 to-purple-700",
     },
     {
       title: "Total Orders",
-      value: "248",
-      icon: <ShoppingCart size={24} className="text-green-600" />,
+      value: orders.length,
+      icon: <ShoppingCart size={24} className="text-white" />,
+      gradient: "from-green-500 to-green-700",
     },
     {
       title: "Revenue",
-      value: "$12,430",
-      icon: <DollarSign size={24} className="text-yellow-500" />,
+      value: `Rs.${totalRevenue}`,
+      icon: <DollarSign size={24} className="text-white" />,
+      gradient: "from-yellow-400 to-yellow-600",
     },
     {
       title: "Customers",
-      value: "98",
-      icon: <Users size={24} className="text-blue-500" />,
+      value: customerCount,
+      icon: <Users size={24} className="text-white" />,
+      gradient: "from-blue-500 to-blue-700",
     },
   ];
 
-  const latestOrders = [
-    { id: "ORD001", customer: "Alice", status: "Pending", total: "$45" },
-    { id: "ORD002", customer: "Bob", status: "Completed", total: "$120" },
-    { id: "ORD003", customer: "Charlie", status: "Cancelled", total: "$32" },
-  ];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products");
+        if (!res.ok) throw new Error("Failed to fetch products");
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+    fetchProducts();
+  }, []);
 
-  const recentProducts = [
-    { name: "Chocolate Cake", category: "Cake" },
-    { name: "Anniversary Gift Box", category: "Gift" },
-    { name: "Vanilla Cupcake", category: "Cake" },
-  ];
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/order/");
+        if (!res.ok) throw new Error("Failed to fetch orders");
+        const data = await res.json();
+        setOrders(data);
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+      }
+    };
+    fetchOrders();
+  }, []);
+
+  const latestOrders = orders.slice(-5).reverse();
+  const recentProducts = products.slice(-3).reverse();
 
   return (
-    <div className="p-6 md:p-10 bg-gray-100 min-h-screen">
-      {/* Welcome Section */}
+    <div className="p-6 md:p-10 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Welcome, Admin 🎉</h1>
 
       {/* Stats Cards */}
@@ -55,18 +82,20 @@ const AdminHome = () => {
         {stats.map((stat, idx) => (
           <div
             key={idx}
-            className="bg-white shadow-md rounded-xl p-4 flex items-center justify-between"
+            className={`bg-gradient-to-r ${stat.gradient} text-white shadow-lg rounded-xl p-5 flex items-center justify-between transition-transform hover:scale-105`}
           >
             <div>
-              <p className="text-gray-500 text-sm">{stat.title}</p>
-              <p className="text-xl font-semibold text-gray-700">{stat.value}</p>
+              <p className="text-sm">{stat.title}</p>
+              <p className="text-2xl font-bold">{stat.value}</p>
             </div>
-            <div className="bg-gray-100 p-2 rounded-full">{stat.icon}</div>
+            <div className="bg-white bg-opacity-20 p-2 rounded-full">
+              {stat.icon}
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Two Column Section */}
+      {/* Latest Orders and Recent Products */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Latest Orders */}
         <div className="bg-white rounded-xl shadow-md p-6">
@@ -83,45 +112,66 @@ const AdminHome = () => {
               </tr>
             </thead>
             <tbody>
-              {latestOrders.map((order) => (
-                <tr key={order.id} className="border-b hover:bg-gray-50">
-                  <td className="py-2">{order.id}</td>
-                  <td className="py-2">{order.customer}</td>
-                  <td className={`py-2 font-medium ${order.status === "Completed"
-                    ? "text-green-600"
-                    : order.status === "Pending"
-                    ? "text-yellow-600"
-                    : "text-red-500"
-                  }`}>
-                    {order.status}
+              {latestOrders.map((order, index) => (
+                <tr
+                  key={index}
+                  className={`${
+                    index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
+                  } hover:bg-gray-100 transition`}
+                >
+                  <td className="py-2 px-2">{order._id || `ORD-${index + 1}`}</td>
+                  <td className="py-2 px-2">{order.customerName || "N/A"}</td>
+                  <td
+                    className={`py-2 px-2 font-medium ${
+                      order.status === "Completed"
+                        ? "text-green-600"
+                        : order.status === "Pending"
+                        ? "text-yellow-600"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {order.status || "Pending"}
                   </td>
-                  <td className="py-2">{order.total}</td>
+                  <td className="py-2 px-2">Rs.{order.total}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        {/* Recent Products */}
+        {/* Recent Products (now in Table format) */}
         <div className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-700">
             Recent Products
           </h2>
-          <ul className="space-y-4">
-            {recentProducts.map((product, index) => (
-              <li key={index} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  {product.category === "Cake" ? (
-                    <Cake size={22} className="text-pink-500" />
-                  ) : (
-                    <Gift size={22} className="text-blue-400" />
-                  )}
-                  <span className="text-gray-700">{product.name}</span>
-                </div>
-                <span className="text-sm text-gray-500">{product.category}</span>
-              </li>
-            ))}
-          </ul>
+          <table className="w-full text-sm text-left">
+            <thead>
+              <tr className="text-gray-500 border-b">
+                <th className="py-2">Product</th>
+                <th className="py-2">Category</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentProducts.map((product, index) => (
+                <tr
+                  key={index}
+                  className={`${
+                    index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
+                  } hover:bg-gray-100 transition`}
+                >
+                  <td className="py-2 px-2 flex items-center gap-2">
+                    {product.category === "Cake" ? (
+                      <Cake size={18} className="text-pink-500" />
+                    ) : (
+                      <Gift size={18} className="text-blue-500" />
+                    )}
+                    <span>{product.name}</span>
+                  </td>
+                  <td className="py-2 px-2 text-gray-600">{product.category}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

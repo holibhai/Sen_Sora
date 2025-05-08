@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Eye,
   Pencil,
@@ -8,44 +8,14 @@ import {
   XCircle,
   Search,
 } from "lucide-react";
-
-const sampleOrders = [
-  {
-    id: "ORD1001",
-    customer: "Alice Johnson",
-    date: "2025-04-20",
-    status: "Pending",
-    total: "$45.99",
-  },
-  {
-    id: "ORD1002",
-    customer: "Bob Smith",
-    date: "2025-04-21",
-    status: "Completed",
-    total: "$89.50",
-  },
-  {
-    id: "ORD1003",
-    customer: "Carol King",
-    date: "2025-04-22",
-    status: "Cancelled",
-    total: "$0.00",
-  },
-  {
-    id: "ORD1004",
-    customer: "Daniel Green",
-    date: "2025-04-23",
-    status: "Pending",
-    total: "$24.75",
-  },
-];
+import { Link } from "react-router-dom";
 
 const getStatusBadge = (status) => {
   switch (status) {
-    case "Completed":
+    case "Processing":
       return (
         <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs flex items-center gap-1">
-          <CheckCircle size={14} /> Completed
+          <CheckCircle size={14} /> Processing
         </span>
       );
     case "Pending":
@@ -54,7 +24,13 @@ const getStatusBadge = (status) => {
           <Clock size={14} /> Pending
         </span>
       );
-    case "Cancelled":
+    case "Shipped":
+      return (
+        <span className="bg-red-100 text-green-600 px-2 py-0.5 rounded text-xs flex items-center gap-1">
+          <XCircle size={14} /> Shipped
+        </span>
+      );
+      case "Delivered":
       return (
         <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded text-xs flex items-center gap-1">
           <XCircle size={14} /> Cancelled
@@ -66,15 +42,71 @@ const getStatusBadge = (status) => {
 };
 
 const Orders = () => {
-  const [orders] = useState(sampleOrders);
+  const [orders, setOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const filteredOrders = orders.filter((order) =>
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/order/");
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        const data = await response.json();
+        setOrders(data);
+      
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  /*const filteredOrders = orders.filter((order) =>
     order.customer.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  );*/
 
+  if (loading) {
+    return (
+      <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+        <div className="text-xl">Loading orders...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6  min-h-screen flex items-center justify-center">
+        <div className="text-xl text-red-500">Error: {error}</div>
+      </div>
+    );
+  }
+  const handleDelete = async (orderId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/order/${orderId}`, {
+        method: 'DELETE',
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to delete the order');
+      }
+  
+      alert('Order deleted successfully');
+      // Optionally, redirect or update state:
+      // navigate('/orders'); or refresh data
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Error deleting order: ' + error.message);
+    }
+  };
+  
   return (
-    <div className="p-6 w-full min-h-screen bg-gray-50">
+    <div className="p-6 w-full min-h-screen ">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">All Orders</h1>
         <div className="relative">
@@ -89,12 +121,12 @@ const Orders = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+      <div className="overflow-x-auto  shadow-md rounded-lg">
         <table className="min-w-full table-auto text-sm text-left">
-          <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
+        <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
+
             <tr>
               <th className="px-6 py-4">Order ID</th>
-              <th className="px-6 py-4">Customer</th>
               <th className="px-6 py-4">Date</th>
               <th className="px-6 py-4">Status</th>
               <th className="px-6 py-4">Total</th>
@@ -102,32 +134,33 @@ const Orders = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.map((order, index) => (
+            {orders.map((order, index) => (
               <tr
-                key={order.id}
-                className={`border-b ${
-                  index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                }`}
+                key={index}
+                className={`border-b ${index % 2 === 0 ? "bg-gray-300" : "bg-gray-200"}`}
+
               >
-                <td className="px-6 py-4 font-medium">{order.id}</td>
-                <td className="px-6 py-4">{order.customer}</td>
+                <td className="px-6 py-4 font-medium">{order.orderId}</td>
                 <td className="px-6 py-4">{order.date}</td>
                 <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
                 <td className="px-6 py-4 font-semibold">{order.total}</td>
                 <td className="px-6 py-4 text-center space-x-3">
-                  <button className="text-blue-600 hover:text-blue-800 transition">
-                    <Eye size={18} />
-                  </button>
+                  <Link to={`/admin/orderdetails/${order.orderId}`}>
+                    <button className="text-blue-600 hover:text-blue-800 transition">
+                      <Eye size={18} />
+                    </button>
+                  </Link>
+
                   <button className="text-yellow-500 hover:text-yellow-600 transition">
                     <Pencil size={18} />
                   </button>
-                  <button className="text-red-500 hover:text-red-700 transition">
+                  <button className="text-red-500 hover:text-red-700 transition" onClick={()=>handleDelete(order.orderId)}>
                     <Trash2 size={18} />
                   </button>
                 </td>
               </tr>
             ))}
-            {filteredOrders.length === 0 && (
+            {orders.length === 0 && (
               <tr>
                 <td colSpan="6" className="text-center py-6 text-gray-500">
                   No orders found.

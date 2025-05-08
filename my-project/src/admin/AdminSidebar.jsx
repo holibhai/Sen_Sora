@@ -10,18 +10,25 @@ import {
   X,
   ChevronDown,
   ChevronUp,
+  Truck, // ✅ New icon for Delivery Cost
 } from "lucide-react";
+import Logo from "../assets/__-removebg-preview.png";
 
 const AdminSidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [productDropdownOpen, setProductDropdownOpen] = useState(false);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
-  const toggleProductDropdown = () => setProductDropdownOpen(!productDropdownOpen);
+  const toggleProductDropdown = () =>
+    setProductDropdownOpen(!productDropdownOpen);
 
   const navLinks = [
-    // { to: "/admin", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
     { to: "/admin/orders", label: "Orders", icon: <ListOrdered size={18} /> },
+    {
+      to: "/admin/deliverycost",
+      label: "Delivery Cost",
+      icon: <Truck size={18} />,
+    }, // ✅ New link
     { to: "/admin/profile", label: "Profile", icon: <UserCircle size={18} /> },
     { to: "/logout", label: "Logout", icon: <LogOut size={18} /> },
   ];
@@ -42,18 +49,22 @@ const AdminSidebar = () => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:static md:block`}
       >
-        <h2 className="text-2xl font-bold text-center mb-6 text-yellow-400">
-          Cake & Gifts
-        </h2>
+        <div className="flex items-center gap-1 cursor-pointer">
+          <img src={Logo} alt="Logo" className="w-[70px] h-[70px]" />
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            Sen-Sora
+          </h1>
+        </div>
 
         {/* Dashboard Link */}
         <NavLink
           to="/admin"
-          className={({ isActive }) =>
-            `flex items-center gap-3 px-3 py-2 rounded-md transition ${
-              isActive ? "bg-yellow-500 text-black" : "hover:bg-gray-700"
-            }`
-          }
+          // className={({ isActive }) =>
+          //   `flex items-center gap-3 px-3 py-2 rounded-md transition ${
+          //     isActive ? "bg-yellow-500 text-black" : "hover:bg-gray-700"
+          //   }`
+          // }
+          className="flex items-center gap-3 px-3 py-2 rounded-md"
         >
           <LayoutDashboard size={18} /> Dashboard
         </NavLink>
@@ -66,7 +77,11 @@ const AdminSidebar = () => {
           <div className="flex items-center gap-3">
             <Package size={18} /> Products
           </div>
-          {productDropdownOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          {productDropdownOpen ? (
+            <ChevronUp size={16} />
+          ) : (
+            <ChevronDown size={16} />
+          )}
         </button>
 
         {productDropdownOpen && (
@@ -75,7 +90,7 @@ const AdminSidebar = () => {
               to="/admin/products"
               className={({ isActive }) =>
                 `block px-2 py-1 rounded-md text-sm ${
-                  isActive ? "bg-yellow-500 text-black" : "hover:bg-gray-700"
+                  isActive ? "bg-red-500 text-white" : "hover:bg-gray-700"
                 }`
               }
             >
@@ -85,7 +100,7 @@ const AdminSidebar = () => {
               to="/admin/category"
               className={({ isActive }) =>
                 `block px-2 py-1 rounded-md text-sm ${
-                  isActive ? "bg-yellow-500 text-black" : "hover:bg-gray-700"
+                  isActive ? "bg-red-500 text-white" : "hover:bg-gray-700"
                 }`
               }
             >
@@ -101,7 +116,7 @@ const AdminSidebar = () => {
             to={link.to}
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2 rounded-md transition ${
-                isActive ? "bg-yellow-500 text-black" : "hover:bg-gray-700"
+                isActive ? "bg-red-500 text-white" : "hover:bg-gray-700"
               }`
             }
           >
