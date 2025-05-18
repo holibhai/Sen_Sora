@@ -553,7 +553,7 @@ const Orders = () => {
                   {new Date(order.date).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
-                <td className="px-6 py-4 font-semibold">${order.total}</td>
+                <td className="px-6 py-4 font-semibold">Rs.{order.total}</td>
                 <td className="px-6 py-4 text-center space-x-3">
                   <Link to={`/admin/orderdetails/${order.orderId}`}>
                     <button className="text-blue-600 hover:text-blue-800 transition">
