@@ -456,7 +456,7 @@ const Orders = () => {
               <div className="bg-gray-100 p-3 rounded-md">
                 <p className="text-sm text-gray-600">Total Revenue</p>
                 <p className="text-2xl font-bold">
-                  ${reportData.summary.totalRevenue.toFixed(2)}
+                  Rs.{reportData.summary.totalRevenue.toFixed(2)}
                 </p>
               </div>
             </div>
@@ -488,7 +488,7 @@ const Orders = () => {
                             {data.totalOrders}
                           </td>
                           <td className="py-2 px-4 border text-center">
-                            ${data.totalRevenue.toFixed(2)}
+                            Rs.{data.totalRevenue.toFixed(2)}
                           </td>
                           <td className="py-2 px-4 border text-center">
                             {data.statusCount.Processing}
