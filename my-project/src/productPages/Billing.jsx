@@ -56,7 +56,7 @@ const Billing = () => {
     try {
       const stripe = await loadStripe("pk_test_51RLzK4DBPjhydGB2EGG2SwUhN3QTQmkINMdP1LsCWxCi2i8iHV6E4zm7nCFvn9U8RUz2Oj3e2nIC6R8OGwydcZDL00TILxxyIs");
 
-      const conversionRate = 308; // 1 USD = 320 LKR (adjust based on live rate)
+      const conversionRate = 308; // 1 USD = 320 LKR (adjust based on live rate) 
 
       const products = cartItems.map((item) => ({
         name: item.productName,
