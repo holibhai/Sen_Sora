@@ -3,8 +3,8 @@ const router = express.Router();
 const Stripe = require("stripe");
 require("dotenv").config();
 
-// const stripe = new Stripe(process.env.STRIPE_KEY);
-const stripe = require('stripe')('');
+const stripe = new Stripe(process.env.STRIPE_KEY);
+
 router.post("/add", async (req, res) => {
   try {
     const { products, shippingCost } = req.body;  // Receive both products and shippingCost from frontend
